@@ -9,8 +9,7 @@ def solution(s, skip, index):
     answer = ''
     alpha = string.ascii_lowercase # [a-z] list 
     context = re.findall(re.compile('[^'+skip+']'), alpha) # skip 할 문자 정규표현식으로 제외
-    answer += context[(context.index(t) + index)%len(context)] for t in s
-		for tmp in s : 
+    for tmp in s :
         answer += context[(context.index(tmp) + index)%len(context)]
     return answer
 
