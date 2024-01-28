@@ -4,6 +4,15 @@
 # 제출일 : 2024.01.28
 def solution(X, Y):
     answer = ''
+    for num in range(9, -1, -1): # O(len(X) + len(Y))
+        answer += str(num) * min(X.count(str(num)), Y.count(str(num)))
+    if answer == '': answer = '-1'
+    if answer[0] == '0': answer = answer[0]
+    
+    return answer
+"""
+def solution(X, Y):
+    answer = ''
     tmp1 = sorted(X, reverse=True) # O(nlogn)
     tmp2 = sorted(Y, reverse=True) # O(mlogm)
     n,m = (0,0)
@@ -18,3 +27,4 @@ def solution(X, Y):
     
     if answer == "": answer = '-1'    
     return answer
+"""
