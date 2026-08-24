@@ -63,6 +63,36 @@ button.filter:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .t-empty{color:var(--muted);font-size:13px;text-align:center;padding:10px 0}
 .tdlg-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
 dialog#tdlg{width:min(420px,calc(100vw - 32px))}
+.tabs{display:inline-flex;background:var(--chip);border:1px solid var(--line);
+  border-radius:999px;padding:3px;gap:2px}
+.tabs button{font:inherit;font-size:13px;border:none;background:none;color:var(--muted);
+  border-radius:999px;padding:4px 14px;cursor:pointer}
+.tabs button.on{background:var(--surface);color:var(--accent-ink);box-shadow:var(--shadow);font-weight:500}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select.fsel{padding:5px 10px;font-size:13px;border-radius:999px;background:var(--chip);color:var(--muted)}
+select.fsel.on{color:var(--accent-ink);border-color:var(--accent)}
+.dblock{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;margin-bottom:14px}
+.dblock .dhead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.dblock .dhead .d{font-family:"Gowun Batang",serif;font-weight:700;font-size:16.5px;
+  color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.dblock .dhead .dow{color:var(--muted);font-size:12.5px}
+.dblock .dhead .cnt{margin-left:auto;font-size:12px;color:var(--muted)}
+.dblock .dlabel{font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);margin-top:10px}
+.drow{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+  padding:10px 0;border:none;border-top:1px dashed var(--line);background:none;
+  font:inherit;color:inherit;cursor:pointer}
+.drow:hover .pn{color:var(--accent-ink)}
+.drow:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.drow .thumb{background:var(--well);border-radius:8px;width:56px;height:56px;flex:none;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.drow .thumb img{max-width:88%;max-height:88%;object-fit:contain;mix-blend-mode:multiply}
+.drow .body{flex:1;min-width:0}
+.drow .pn{font-weight:500;font-size:13.5px}
+.drow .pn .pko{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+.drow p{margin:2px 0 0;font-size:13.5px;white-space:pre-wrap;color:var(--ink)}
+.dblock .note{border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
 section.block{margin-top:34px}
 .sec-head{display:baseline;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
   margin-bottom:14px}
@@ -159,6 +189,11 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
     </div>
   </header>
   <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="보기 방식">
+      <button type="button" id="tabPose" class="on">자세별</button>
+      <button type="button" id="tabDate">날짜별</button>
+    </div>
+    <select id="fTch" class="fsel" aria-label="선생님 필터"></select>
     <label class="filter" id="filterWrap"><input type="checkbox" id="filterMemo">메모 있는 자세만 보기</label>
     <button class="filter" id="tMan" type="button">선생님 관리</button>
     <span id="saveStatus"></span>
@@ -291,6 +326,7 @@ function fillTeacherSelects(){
     const want = cur && cur!=="__new" ? cur : last;
     sel.value = state.teachers.includes(want) ? want : "";
   }
+  if(typeof fillFilterSelect === "function") fillFilterSelect();
 }
 function handleTchChange(e){
   const sel = e.target;
@@ -317,7 +353,7 @@ function renderTList(){
     del.addEventListener("click", ()=>{
       if(!confirm(`'${name}' 선생님을 목록에서 삭제할까요?\n이미 남긴 메모의 선생님 표시는 유지됩니다.`)) return;
       state.teachers = state.teachers.filter(t=>t!==name);
-      renderTList(); fillTeacherSelects(); persist();
+      renderTList(); fillTeacherSelects(); renderMain(); persist();
     });
     row.appendChild(nm); row.appendChild(uses); row.appendChild(del);
     list.appendChild(row);
@@ -340,16 +376,67 @@ $("#dTch").addEventListener("change", handleTchChange);
 /* ---------- render ---------- */
 const KDOW = ["일","월","화","수","목","금","토"];
 function notesOf(id){ return state.notes[id] || []; }
-function lastDate(id){ const n=notesOf(id); return n.length ? n.map(x=>x.d).sort().slice(-1)[0] : null; }
 function fmtD(d){ const [y,m,dd]=d.split("-"); return `${m}.${dd}`; }
+function poseById(id){ return POSES.find(p=>p.id===id); }
+
+/* view mode + teacher filter (per browser) */
+let view = "pose", fTch = "";
+try{
+  view = localStorage.getItem("ashtanga-view") === "date" ? "date" : "pose";
+  fTch = localStorage.getItem("ashtanga-ftch") || "";
+}catch(e){}
+function matchTch(x){
+  if(!fTch) return true;
+  if(fTch === "__none") return !x.tch;
+  return x.tch === fTch;
+}
+function fNotesOf(id){ return notesOf(id).filter(matchTch); }
+function lastDate(id){ const n=fNotesOf(id); return n.length ? n.map(x=>x.d).sort().slice(-1)[0] : null; }
+function fillFilterSelect(){
+  const sel = $("#fTch");
+  sel.innerHTML = "";
+  sel.add(new Option("선생님 전체",""));
+  state.teachers.forEach(t => sel.add(new Option(t,t)));
+  sel.add(new Option("선생님 태그 없음","__none"));
+  if(fTch && fTch!=="__none" && !state.teachers.includes(fTch)) fTch = "";
+  sel.value = fTch;
+  sel.classList.toggle("on", !!fTch);
+}
+function setView(v){
+  view = v;
+  try{ localStorage.setItem("ashtanga-view", v); }catch(e){}
+  renderMain();
+}
+function renderMain(){
+  $("#tabPose").classList.toggle("on", view==="pose");
+  $("#tabDate").classList.toggle("on", view==="date");
+  $("#tabPose").setAttribute("aria-selected", view==="pose");
+  $("#tabDate").setAttribute("aria-selected", view==="date");
+  $("#filterWrap").style.display = view==="pose" ? "" : "none";
+  $("#dayLog").hidden = view==="date";
+  renderDayLog();
+  if(view==="pose") renderGrid(); else renderDateView();
+  renderStats();
+}
+$("#tabPose").addEventListener("click", ()=>setView("pose"));
+$("#tabDate").addEventListener("click", ()=>setView("date"));
+$("#fTch").addEventListener("change", ()=>{
+  fTch = $("#fTch").value;
+  try{ localStorage.setItem("ashtanga-ftch", fTch); }catch(e){}
+  $("#fTch").classList.toggle("on", !!fTch);
+  renderMain();
+});
 
 function renderStats(){
   let memo=0, poses=0; const days=new Set();
   for(const id in state.notes){
-    const n=state.notes[id]; if(!n.length) continue;
+    const n=state.notes[id].filter(matchTch); if(!n.length) continue;
     poses++; memo+=n.length; n.forEach(x=>days.add(x.d));
   }
-  for(const d in state.days){ if(state.days[d].length){ memo+=state.days[d].length; days.add(d); } }
+  for(const d in state.days){
+    const n=state.days[d].filter(matchTch);
+    if(n.length){ memo+=n.length; days.add(d); }
+  }
   $("#stMemo").textContent=memo; $("#stDays").textContent=days.size; $("#stPoses").textContent=poses;
 }
 
@@ -370,22 +457,23 @@ function noteRow(x, onDelete){
 }
 function renderDayLog(){
   const log = $("#dayLog"); log.innerHTML = "";
-  const dates = Object.keys(state.days).filter(d=>state.days[d].length).sort().reverse();
+  const dates = Object.keys(state.days).filter(d=>state.days[d].filter(matchTch).length).sort().reverse();
   $("#dayCnt").textContent = dates.length ? `${dates.length}일 기록` : "";
+  if(log.hidden) return;
   if(!dates.length){
-    log.innerHTML = `<div class="empty-log">아직 데일리 노트가 없어요. 오늘 수련 전체에 대한 기록을 남겨보세요.</div>`;
+    log.innerHTML = `<div class="empty-log">${fTch ? "이 선생님으로 필터된 데일리 노트가 없어요." : "아직 데일리 노트가 없어요. 오늘 수련 전체에 대한 기록을 남겨보세요."}</div>`;
     return;
   }
   for(const d of dates){
     const day = document.createElement("div"); day.className="day";
     const dow = KDOW[new Date(d+"T00:00:00").getDay()];
     day.innerHTML = `<div class="d">${d.replaceAll("-",". ")}<span class="dow">${dow}</span></div>`;
-    for(const x of state.days[d].slice().sort((a,b)=>(b.ts||0)-(a.ts||0))){
+    for(const x of state.days[d].filter(matchTch).sort((a,b)=>(b.ts||0)-(a.ts||0))){
       day.appendChild(noteRow(x, ()=>{
         if(!confirm("이 노트를 삭제할까요?")) return;
         state.days[d] = state.days[d].filter(y=>y!==x);
         if(!state.days[d].length) delete state.days[d];
-        renderDayLog(); renderStats(); persist();
+        renderMain(); persist();
       }));
     }
     log.appendChild(day);
@@ -400,7 +488,7 @@ $("#dayForm").addEventListener("submit", e=>{
   (state.days[d] ||= []).push(entry);
   rememberTch(entry.tch || "");
   $("#dText").value = "";
-  renderDayLog(); renderStats(); persist();
+  renderMain(); persist();
 });
 
 function renderGrid(){
@@ -409,16 +497,16 @@ function renderGrid(){
   const app = $("#app"); app.innerHTML = "";
   for(const sec of SECTIONS){
     let items = POSES.filter(p=>p.sec===sec.key);
-    if(onlyMemo) items = items.filter(p=>notesOf(p.id).length);
+    if(onlyMemo) items = items.filter(p=>fNotesOf(p.id).length);
     if(!items.length) continue;
     const block = document.createElement("section"); block.className="block";
-    const withMemo = items.filter(p=>notesOf(p.id).length).length;
+    const withMemo = items.filter(p=>fNotesOf(p.id).length).length;
     block.innerHTML = `<div class="sec-head"><h2>${sec.ko}</h2><span class="en">${sec.en}</span>
       <span class="cnt">${withMemo}/${items.length} 자세에 메모</span></div>`;
     const grid = document.createElement("div");
     grid.className = "grid" + (sec.key==="surya" ? " surya" : "");
     for(const p of items){
-      const n = notesOf(p.id); const ld = lastDate(p.id);
+      const n = fNotesOf(p.id); const ld = lastDate(p.id);
       const b = document.createElement("button");
       b.className="card"; b.type="button"; b.dataset.id=p.id;
       b.innerHTML = `
@@ -432,7 +520,67 @@ function renderGrid(){
     }
     block.appendChild(grid); app.appendChild(block);
   }
-  renderStats();
+}
+
+function renderDateView(){
+  const app = $("#app"); app.innerHTML = "";
+  const map = {};
+  for(const id in state.notes){
+    for(const x of state.notes[id].filter(matchTch)){
+      (map[x.d] ||= {daily:[],poses:[]}).poses.push({id, x});
+    }
+  }
+  for(const d in state.days){
+    for(const x of state.days[d].filter(matchTch)){
+      (map[d] ||= {daily:[],poses:[]}).daily.push(x);
+    }
+  }
+  const dates = Object.keys(map).sort().reverse();
+  const wrap = document.createElement("section"); wrap.className="block";
+  wrap.innerHTML = `<div class="sec-head"><h2>날짜별 기록</h2><span class="en">By Date</span>
+    <span class="cnt">${dates.length}일</span></div>`;
+  if(!dates.length){
+    wrap.insertAdjacentHTML("beforeend",
+      `<div class="empty-log">${fTch ? "이 선생님으로 필터된 기록이 없어요." : "아직 기록이 없어요. 자세별 화면이나 위의 데일리 노트에서 시작해 보세요."}</div>`);
+    app.appendChild(wrap); return;
+  }
+  for(const d of dates){
+    const e = map[d];
+    const block = document.createElement("article"); block.className="dblock";
+    const dow = KDOW[new Date(d+"T00:00:00").getDay()];
+    const cnt = [];
+    if(e.daily.length) cnt.push(`데일리 ${e.daily.length}`);
+    if(e.poses.length) cnt.push(`자세 메모 ${e.poses.length}`);
+    block.innerHTML = `<div class="dhead"><span class="d">${d.replaceAll("-",". ")}</span>
+      <span class="dow">${dow}요일</span><span class="cnt">${cnt.join(" · ")}</span></div>`;
+    if(e.daily.length){
+      block.insertAdjacentHTML("beforeend", `<div class="dlabel">데일리 노트</div>`);
+      for(const x of e.daily.slice().sort((a,b)=>(b.ts||0)-(a.ts||0))){
+        block.appendChild(noteRow(x, ()=>{
+          if(!confirm("이 노트를 삭제할까요?")) return;
+          state.days[d] = state.days[d].filter(y=>y!==x);
+          if(!state.days[d].length) delete state.days[d];
+          renderMain(); persist();
+        }));
+      }
+    }
+    if(e.poses.length){
+      block.insertAdjacentHTML("beforeend", `<div class="dlabel">자세 메모</div>`);
+      e.poses.sort((a,b)=> (poseById(a.id).n - poseById(b.id).n) || (a.x.ts||0)-(b.x.ts||0));
+      for(const {id, x} of e.poses){
+        const p = poseById(id); if(!p) continue;
+        const row = document.createElement("button"); row.className="drow"; row.type="button";
+        row.innerHTML = `<span class="thumb"><img src="${p.img}" alt="" loading="lazy"></span>
+          <span class="body"><span class="pn">${p.sk}<span class="pko">${p.ko}</span>
+          ${x.tch ? `<span class="tchip"></span>` : ""}</span><p></p></span>`;
+        row.querySelector("p").textContent = x.t;
+        const chip = row.querySelector(".tchip"); if(chip) chip.textContent = x.tch;
+        row.addEventListener("click", ()=>openPose(id));
+        block.appendChild(row);
+      }
+    }
+    app.appendChild(block);
+  }
 }
 
 /* ---------- modal ---------- */
@@ -465,7 +613,7 @@ function renderLog(){
         if(!confirm("이 메모를 삭제할까요?")) return;
         state.notes[openId] = notesOf(openId).filter(y=>y!==x);
         if(!state.notes[openId].length) delete state.notes[openId];
-        renderLog(); renderGrid(); persist();
+        renderLog(); renderMain(); persist();
       }));
     }
     log.appendChild(day);
@@ -480,17 +628,17 @@ $("#addForm").addEventListener("submit", e=>{
   (state.notes[openId] ||= []).push(entry);
   rememberTch(entry.tch || "");
   $("#mText").value="";
-  renderLog(); renderGrid(); persist();
+  renderLog(); renderMain(); persist();
 });
 $("#mClose").addEventListener("click", ()=> $("#dlg").close());
 $("#dlg").addEventListener("click", e=>{ if(e.target === $("#dlg")) $("#dlg").close(); });
 $("#dlg").addEventListener("close", ()=>{ openId=null; });
-$("#filterMemo").addEventListener("change", renderGrid);
+$("#filterMemo").addEventListener("change", renderMain);
 
 $("#dDate").value = new Date().toISOString().slice(0,10);
 fillTeacherSelects();
-renderDayLog();
-renderGrid();
+fillFilterSelect();
+renderMain();
 try{
   const sy = sessionStorage.getItem("scrollY");
   if(sy !== null){ sessionStorage.removeItem("scrollY"); window.scrollTo(0, parseFloat(sy)||0); }
