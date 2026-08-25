@@ -132,6 +132,25 @@ section.block{margin-top:34px}
 .stars button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .rstars{font-size:12px;color:var(--star);letter-spacing:1.5px;white-space:nowrap;align-self:center}
 .rstars .off{color:var(--line)}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;max-width:480px}
+.cal-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.cal-head .mon{font-family:"Gowun Batang",serif;font-weight:700;font-size:16px;
+  min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
+.cal-head .rate{margin-left:auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-grid .dow{font-size:10.5px;color:var(--muted);text-align:center;padding-bottom:2px}
+.cal-day{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font:inherit;font-size:12.5px;cursor:pointer;border:1px solid transparent;background:none;
+  color:var(--ink);font-variant-numeric:tabular-nums;padding:0}
+.cal-day:hover{border-color:var(--line)}
+.cal-day.att{background:var(--accent);color:var(--surface);font-weight:600;cursor:default}
+.cal-day.manual{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.cal-day.today{border-color:var(--accent)}
+.cal-day.future{opacity:.35;cursor:default}
+.cal-day:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.cal-legend{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.cal-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 3px -1px 0}
 .card .names{min-height:56px}
 .card .sk{font-family:"Gowun Batang",serif;font-size:13.5px;font-weight:700;line-height:1.3}
 .card .ko{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
@@ -195,7 +214,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
-<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:47:22.663Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787617081239,"tch":"한별"}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652}}</script>
+<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:51:24.870Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787619078951,"tch":"한별","diff":3}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652}}</script>
 
 <div class="wrap">
   <header class="top">
@@ -209,6 +228,8 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
       <div class="stat"><div class="v" id="stPoses">0</div><div class="k">메모한 자세</div></div>
       <div class="stat"><div class="v" id="stProg">0%</div><div class="k" id="stProgK">아사나 도달</div>
         <div class="bar"><i id="stBar"></i></div></div>
+      <div class="stat"><div class="v" id="stAtt">0%</div><div class="k" id="stAttK">이번 달 출석</div>
+        <div class="bar"><i id="stAttBar"></i></div></div>
     </div>
   </header>
   <div class="toolbar">
@@ -236,6 +257,21 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
         <button class="btn" type="submit">노트 저장</button>
       </form>
       <div class="log" id="dayLog"></div>
+    </div>
+  </section>
+  <section class="block" id="attBlock">
+    <div class="sec-head"><h2>출석</h2><span class="en">Attendance</span>
+      <span class="cnt" id="attTotal"></span></div>
+    <div class="cal">
+      <div class="cal-head">
+        <button class="x" id="calPrev" aria-label="이전 달">‹</button>
+        <span class="mon" id="calMon"></span>
+        <button class="x" id="calNext" aria-label="다음 달">›</button>
+        <span class="rate" id="calRate"></span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend"><i style="background:var(--accent)"></i>기록이 있는 날(자동 출석)
+        <i style="background:var(--accent-soft);margin-left:10px"></i>직접 체크한 날 · 빈 날짜를 누르면 출석으로 표시돼요</div>
     </div>
   </section>
   <main id="app"></main>
@@ -303,6 +339,11 @@ if(!state.notes) state.notes = {};
 if(!state.teachers) state.teachers = [];
 if(!state.days) state.days = {};
 if(!state.done) state.done = {};
+if(!state.att) state.att = {};
+
+function localDate(dt = new Date()){
+  return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+}
 
 let art = null;
 const useCap = (window.claude && window.claude.use) ? window.claude.use("artifact") : Promise.resolve(null);
@@ -517,6 +558,7 @@ function renderMain(){
   $("#filterWrap").style.display = view==="pose" ? "" : "none";
   $("#dayLog").hidden = view==="date";
   renderDayLog();
+  renderCal();
   if(view==="pose") renderGrid(); else renderDateView();
   renderStats();
 }
@@ -545,7 +587,70 @@ function renderStats(){
   $("#stProg").textContent = pct + "%";
   $("#stProgK").textContent = `아사나 도달 ${doneN}/${TRACKED.length}`;
   $("#stBar").style.width = pct + "%";
+  const today = localDate();
+  const att = attendedSet();
+  const monthN = [...att].filter(d=>d.startsWith(today.slice(0,7))).length;
+  const elapsed = Number(today.slice(8,10));
+  const apct = Math.round(monthN / elapsed * 100);
+  $("#stAtt").textContent = apct + "%";
+  $("#stAttK").textContent = `이번 달 출석 ${monthN}/${elapsed}일`;
+  $("#stAttBar").style.width = Math.min(100, apct) + "%";
 }
+
+/* ---------- attendance ---------- */
+function recordDates(){
+  const s = new Set();
+  for(const id in state.notes) state.notes[id].forEach(x=>s.add(x.d));
+  for(const d in state.days) if(state.days[d].length) s.add(d);
+  return s;
+}
+function attendedSet(){
+  const s = recordDates();
+  for(const d in state.att) if(state.att[d]) s.add(d);
+  return s;
+}
+const _now = new Date();
+let calY = _now.getFullYear(), calM = _now.getMonth();
+function renderCal(){
+  const rec = recordDates();
+  const att = attendedSet();
+  const today = localDate();
+  $("#calMon").textContent = `${calY}년 ${calM+1}월`;
+  const grid = $("#calGrid"); grid.innerHTML = "";
+  for(const d of KDOW){
+    const e = document.createElement("span"); e.className="dow"; e.textContent=d;
+    grid.appendChild(e);
+  }
+  const firstDow = new Date(calY, calM, 1).getDay();
+  const lastDay = new Date(calY, calM+1, 0).getDate();
+  for(let i=0;i<firstDow;i++) grid.appendChild(document.createElement("span"));
+  let attCnt = 0;
+  for(let day=1; day<=lastDay; day++){
+    const ds = `${calY}-${String(calM+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const b = document.createElement("button");
+    b.type="button"; b.className="cal-day"; b.textContent=day;
+    const isRec = rec.has(ds), isAtt = att.has(ds), isFuture = ds > today;
+    if(isAtt){ attCnt++; b.classList.add(isRec ? "att" : "manual"); }
+    if(ds === today) b.classList.add("today");
+    if(isFuture){ b.classList.add("future"); b.disabled = true; }
+    b.title = isRec ? `${ds} · 수련 기록 있음` : isAtt ? `${ds} · 출석 체크됨 (누르면 해제)` : `${ds} · 누르면 출석 체크`;
+    if(!isFuture && !isRec){
+      b.addEventListener("click", ()=>{
+        if(state.att[ds]) delete state.att[ds]; else state.att[ds] = true;
+        renderCal(); renderStats(); persist();
+      });
+    }
+    grid.appendChild(b);
+  }
+  let denom;
+  if(today.slice(0,7) === `${calY}-${String(calM+1).padStart(2,"0")}`) denom = Number(today.slice(8,10));
+  else denom = `${calY}-${String(calM+1).padStart(2,"0")}` < today.slice(0,7) ? lastDay : 0;
+  $("#calRate").textContent = denom
+    ? `출석 ${attCnt}일 · 출석률 ${Math.round(attCnt/denom*100)}%` : "";
+  $("#attTotal").textContent = att.size ? `전체 출석 ${att.size}일` : "";
+}
+$("#calPrev").addEventListener("click", ()=>{ calM--; if(calM<0){ calM=11; calY--; } renderCal(); });
+$("#calNext").addEventListener("click", ()=>{ calM++; if(calM>11){ calM=0; calY++; } renderCal(); });
 
 /* ---------- note rows (shared by pose log, daily log, date view) ---------- */
 function noteRow(x, onDelete, onChanged){
@@ -756,7 +861,7 @@ function openPose(id){
   $("#mSk").textContent = `${String(p.n).padStart(2,"0")} · ${p.sk}`;
   $("#mKo").textContent = p.ko;
   const tag=$("#mTag"); if(p.tag){ tag.textContent=p.tag; tag.hidden=false; } else tag.hidden=true;
-  $("#mDate").value = new Date().toISOString().slice(0,10);
+  $("#mDate").value = localDate();
   $("#mText").value = "";
   fillTeacherSelects();
   syncMDone();
@@ -810,7 +915,7 @@ for(const [taId, formId] of [["mText","addForm"],["dText","dayForm"]]){
   });
 }
 
-$("#dDate").value = new Date().toISOString().slice(0,10);
+$("#dDate").value = localDate();
 renderStars();
 fillTeacherSelects();
 fillFilterSelect();
