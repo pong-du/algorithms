@@ -6,6 +6,7 @@
   --bg:#F2EEE3; --surface:#FBF9F2; --well:#EDE8DC; --line:#DCD5C4;
   --ink:#2B2A33; --muted:#77716B; --accent:#3D4C8E; --accent-soft:#E4E7F3;
   --accent-ink:#33406F; --danger:#8C3B33; --chip:#EFEBDF; --star:#C99A2E;
+  --moon-dark:#BDB5A3; --moon-off:#F1ECDF;
   --shadow:0 1px 2px rgba(43,42,51,.06),0 8px 24px rgba(43,42,51,.07);
 }
 @media (prefers-color-scheme: dark){
@@ -13,6 +14,7 @@
     --bg:#14161E; --surface:#1D2029; --well:#E9E4D6; --line:#2E3140;
     --ink:#E9E7EF; --muted:#9B98A8; --accent:#8E9CDE; --accent-soft:#2A3050;
     --accent-ink:#B9C2EC; --danger:#D98A80; --chip:#262A38; --star:#E0B84F;
+    --moon-dark:#2B3044; --moon-off:#8C93AC;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
   }
 }
@@ -140,15 +142,24 @@ section.block{margin-top:34px}
 .cal-head .rate{margin-left:auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-grid .dow{font-size:10.5px;color:var(--muted);text-align:center;padding-bottom:2px}
-.cal-day{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;
-  font:inherit;font-size:12.5px;cursor:pointer;border:1px solid transparent;background:none;
-  color:var(--ink);font-variant-numeric:tabular-nums;padding:0}
+.cal-day{border-radius:9px;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:1px;font:inherit;cursor:pointer;
+  border:1px solid transparent;background:none;color:var(--ink);
+  font-variant-numeric:tabular-nums;padding:4px 0 3px;min-height:44px}
 .cal-day:hover{border-color:var(--line)}
-.cal-day.att{background:var(--accent);color:var(--surface);font-weight:600;cursor:default}
-.cal-day.manual{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.cal-day svg{display:block}
+.cal-day .md{fill:var(--moon-dark)}
+.cal-day .ml{fill:var(--moon-off)}
+.cal-day.att .ml,.cal-day.manual .ml{fill:var(--star)}
+.cal-day .dn{font-size:9.5px;line-height:1.3;color:var(--muted)}
+.cal-day.att .dn,.cal-day.manual .dn{color:var(--ink);font-weight:600}
+.cal-day .mdot{width:4px;height:4px;border-radius:50%;background:var(--danger)}
+.cal-day.att{cursor:default}
 .cal-day.today{border-color:var(--accent)}
 .cal-day.future{opacity:.35;cursor:default}
 .cal-day:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.cal-legend .mdot{display:inline-block;width:4px;height:4px;border-radius:50%;
+  background:var(--danger);margin:0 3px 2px 0}
 .cal-legend{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5}
 .cal-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 3px -1px 0}
 .card .names{min-height:56px}
@@ -279,8 +290,9 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
         <span class="rate" id="calRate"></span>
       </div>
       <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-legend"><i style="background:var(--accent)"></i>기록이 있는 날(자동 출석)
-        <i style="background:var(--accent-soft);margin-left:10px"></i>직접 체크한 날 · 빈 날짜를 누르면 출석으로 표시돼요</div>
+      <div class="cal-legend">달 모양은 그날의 실제 달 위상이에요 ·
+        <b style="color:var(--star)">노란 달</b> = 출석 · 회색 달 = 미출석 ·
+        <i class="mdot"></i>문데이(삭·보름, 전통 휴식일) · 빈 날짜를 누르면 출석 체크</div>
     </div>
   </section>
   <main id="app"></main>
@@ -618,6 +630,48 @@ function attendedSet(){
   for(const d in state.att) if(state.att[d]) s.add(d);
   return s;
 }
+const SYNODIC = 29.53058867;
+const NEW_MOON_EPOCH = Date.UTC(2000, 0, 6, 18, 14);
+function moonAge(y, m, day){
+  let a = ((new Date(y, m, day, 12).getTime() - NEW_MOON_EPOCH) / 86400000) % SYNODIC;
+  return a < 0 ? a + SYNODIC : a;
+}
+function moonInfo(y, m, day){
+  const age = moonAge(y, m, day);
+  const p = age / SYNODIC;
+  const isNew = age < 0.5 || age > SYNODIC - 0.5;
+  const isFull = Math.abs(age - SYNODIC/2) < 0.5;
+  const names = ["삭 (뉴문)","초승달","상현달","차오르는 달","보름달","이지러지는 달","하현달","그믐달"];
+  const idx = isNew ? 0 : isFull ? 4 : Math.round(p*8) % 8;
+  return {p, name: names[idx], moonday: isNew || isFull};
+}
+function moonSvg(p, r = 10){
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  const s = (r+1)*2;
+  svg.setAttribute("viewBox", `${-r-1} ${-r-1} ${s} ${s}`);
+  svg.setAttribute("width", "22"); svg.setAttribute("height", "22");
+  svg.setAttribute("aria-hidden", "true");
+  const c = document.createElementNS(NS, "circle");
+  c.setAttribute("r", r); c.setAttribute("class", "md");
+  svg.appendChild(c);
+  if(p < 0.02 || p > 0.98) return svg;            // new moon: all dark
+  if(Math.abs(p - 0.5) < 0.02){                    // full moon: all lit
+    const f = document.createElementNS(NS, "circle");
+    f.setAttribute("r", r); f.setAttribute("class", "ml");
+    svg.appendChild(f);
+    return svg;
+  }
+  const k = Math.cos(2*Math.PI*p), rx = Math.abs(k)*r;
+  const d = p < 0.5
+    ? `M0,${-r} A${r},${r} 0 0 1 0,${r} A${rx},${r} 0 0 ${k>0?0:1} 0,${-r} Z`
+    : `M0,${-r} A${r},${r} 0 0 0 0,${r} A${rx},${r} 0 0 ${k>0?1:0} 0,${-r} Z`;
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", d); path.setAttribute("class", "ml");
+  svg.appendChild(path);
+  return svg;
+}
+
 const _now = new Date();
 let calY = _now.getFullYear(), calM = _now.getMonth();
 function renderCal(){
@@ -637,12 +691,18 @@ function renderCal(){
   for(let day=1; day<=lastDay; day++){
     const ds = `${calY}-${String(calM+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
     const b = document.createElement("button");
-    b.type="button"; b.className="cal-day"; b.textContent=day;
+    b.type="button"; b.className="cal-day";
+    const mi = moonInfo(calY, calM, day);
+    b.appendChild(moonSvg(mi.p));
+    const dn = document.createElement("span"); dn.className="dn"; dn.textContent = day;
+    b.appendChild(dn);
+    if(mi.moonday){ const md = document.createElement("i"); md.className="mdot"; b.appendChild(md); }
     const isRec = rec.has(ds), isAtt = att.has(ds), isFuture = ds > today;
     if(isAtt){ attCnt++; b.classList.add(isRec ? "att" : "manual"); }
     if(ds === today) b.classList.add("today");
     if(isFuture){ b.classList.add("future"); b.disabled = true; }
-    b.title = isRec ? `${ds} · 수련 기록 있음` : isAtt ? `${ds} · 출석 체크됨 (누르면 해제)` : `${ds} · 누르면 출석 체크`;
+    const state_ = isRec ? "수련 기록 있음" : isAtt ? "출석 체크됨 (누르면 해제)" : isFuture ? "" : "누르면 출석 체크";
+    b.title = `${ds} · ${mi.name}${mi.moonday ? " · 문데이(휴식일)" : ""}${state_ ? " · "+state_ : ""}`;
     if(!isFuture && !isRec){
       b.addEventListener("click", ()=>{
         if(state.att[ds]) delete state.att[ds]; else state.att[ds] = true;
