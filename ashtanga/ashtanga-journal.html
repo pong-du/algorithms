@@ -114,16 +114,18 @@ section.block{margin-top:34px}
 .card .well img{max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply}
 .card .no{position:absolute;top:6px;left:8px;font-size:10.5px;color:var(--muted);
   font-variant-numeric:tabular-nums;letter-spacing:.05em}
-.chk{position:absolute;top:5px;right:6px;width:22px;height:22px;border-radius:50%;
-  border:1.5px solid var(--muted);color:transparent;background:var(--surface);
-  display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;
-  cursor:pointer;opacity:.5;transition:opacity .12s ease}
-.card:hover .chk{opacity:1}
-.chk.on{background:var(--accent);border-color:var(--accent);color:var(--surface);opacity:1}
+.donemoon{position:absolute;top:6px;right:7px;line-height:0}
+.donemoon .md{fill:var(--moon-dark)}
+.donemoon .ml{fill:var(--star)}
 .card.done{border-color:var(--accent)}
 .mdone{font:inherit;font-size:12.5px;border:1.5px solid var(--line);background:none;
-  color:var(--muted);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap}
-.mdone.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+  color:var(--muted);border-radius:999px;padding:4px 13px 4px 9px;cursor:pointer;
+  white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.mdone svg{display:block}
+.mdone .md{fill:var(--moon-dark)}
+.mdone .ml{fill:var(--star)}
+.mdone.on{border-color:var(--star);color:var(--ink);font-weight:500}
+.mdone:hover{border-color:var(--muted)}
 .mdone:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stat .bar{height:3px;background:var(--line);border-radius:2px;margin-top:5px;overflow:hidden}
 .stat .bar i{display:block;height:100%;background:var(--accent);border-radius:2px;width:0}
@@ -234,7 +236,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
-<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:56:40.841Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787619078951,"tch":"한별","diff":3}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652},"att":{"2026-08-21":true,"2026-08-20":true,"2026-08-18":true,"2026-08-13":true,"2026-08-12":true,"2026-08-11":true,"2026-08-08":true,"2026-08-07":true,"2026-08-06":true}}</script>
+<script type="application/json" id="state">{"updatedAt":"2026-08-25T11:50:55.490Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787619078951,"tch":"한별","diff":3}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652,"utkatasana":1787658555327},"att":{"2026-08-21":true,"2026-08-18":true,"2026-08-13":true,"2026-08-12":true,"2026-08-11":true,"2026-08-08":true,"2026-08-07":true,"2026-08-06":true,"2026-08-20":true}}</script>
 
 <div class="wrap">
   <header class="top">
@@ -540,7 +542,10 @@ function syncMDone(){
   b.hidden = false;
   const on = isDone(openId);
   b.classList.toggle("on", on);
-  b.textContent = on ? "완성 ✓" : "완성 표시";
+  b.innerHTML = "";
+  b.appendChild(moonSvg(on ? 0.5 : 0, 10, 16));
+  b.appendChild(document.createTextNode(on ? "완성" : "미완성"));
+  b.title = on ? "누르면 미완성으로 바꿔요" : "누르면 완성으로 표시해요";
 }
 
 /* view mode + teacher filter (per browser) */
@@ -645,12 +650,12 @@ function moonInfo(y, m, day){
   const idx = isNew ? 0 : isFull ? 4 : Math.round(p*8) % 8;
   return {p, name: names[idx], moonday: isNew || isFull};
 }
-function moonSvg(p, r = 10){
+function moonSvg(p, r = 10, px = 22){
   const NS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(NS, "svg");
   const s = (r+1)*2;
   svg.setAttribute("viewBox", `${-r-1} ${-r-1} ${s} ${s}`);
-  svg.setAttribute("width", "22"); svg.setAttribute("height", "22");
+  svg.setAttribute("width", px); svg.setAttribute("height", px);
   svg.setAttribute("aria-hidden", "true");
   const c = document.createElementNS(NS, "circle");
   c.setAttribute("r", r); c.setAttribute("class", "md");
@@ -850,15 +855,19 @@ function renderGrid(){
       b.className="card" + (done ? " done" : ""); b.type="button"; b.dataset.id=p.id;
       b.innerHTML = `
         <div class="well"><span class="no">${String(p.n).padStart(2,"0")}</span>
-          ${p.sec!=="surya" ? `<span class="chk${done?" on":""}" data-chk title="완성/미완성 전환">✓</span>` : ""}
           <img src="${p.img}" alt="${p.sk}" loading="lazy"></div>
         <div class="names"><div class="sk">${p.sk}</div><div class="ko">${p.ko}</div></div>
         <div class="meta">${n.length
           ? `<span class="badge">메모 ${n.length}</span><span class="lastd">최근 ${fmtD(ld)}</span>`
           : `<span class="badge empty">메모 없음</span>`}</div>`;
+      if(p.sec !== "surya"){
+        const dm = document.createElement("span");
+        dm.className = "donemoon";
+        dm.title = done ? "완성한 자세" : "미완성 · 자세를 눌러 메모 창에서 완성 표시";
+        dm.appendChild(moonSvg(done ? 0.5 : 0, 10, 18));
+        b.querySelector(".well").appendChild(dm);
+      }
       b.addEventListener("click", ()=>openPose(p.id));
-      const chk = b.querySelector("[data-chk]");
-      if(chk) chk.addEventListener("click", e=>{ e.stopPropagation(); toggleDone(p.id); });
       grid.appendChild(b);
     }
     block.appendChild(grid); app.appendChild(block);
