@@ -112,6 +112,19 @@ section.block{margin-top:34px}
 .card .well img{max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply}
 .card .no{position:absolute;top:6px;left:8px;font-size:10.5px;color:var(--muted);
   font-variant-numeric:tabular-nums;letter-spacing:.05em}
+.chk{position:absolute;top:5px;right:6px;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--muted);color:transparent;background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;
+  cursor:pointer;opacity:.5;transition:opacity .12s ease}
+.card:hover .chk{opacity:1}
+.chk.on{background:var(--accent);border-color:var(--accent);color:var(--surface);opacity:1}
+.card.done{border-color:var(--accent)}
+.mdone{font:inherit;font-size:12.5px;border:1.5px solid var(--line);background:none;
+  color:var(--muted);border-radius:999px;padding:4px 12px;cursor:pointer;white-space:nowrap}
+.mdone.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.mdone:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stat .bar{height:3px;background:var(--line);border-radius:2px;margin-top:5px;overflow:hidden}
+.stat .bar i{display:block;height:100%;background:var(--accent);border-radius:2px;width:0}
 .card .names{min-height:56px}
 .card .sk{font-family:"Gowun Batang",serif;font-size:13.5px;font-weight:700;line-height:1.3}
 .card .ko{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
@@ -175,7 +188,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
-<script type="application/json" id="state">{"updatedAt":"","notes":{}}</script>
+<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:18:52.519Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787617081239,"tch":"한별"}]}}</script>
 
 <div class="wrap">
   <header class="top">
@@ -187,6 +200,8 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
       <div class="stat"><div class="v" id="stMemo">0</div><div class="k">전체 메모</div></div>
       <div class="stat"><div class="v" id="stDays">0</div><div class="k">기록한 날</div></div>
       <div class="stat"><div class="v" id="stPoses">0</div><div class="k">메모한 자세</div></div>
+      <div class="stat"><div class="v" id="stProg">0%</div><div class="k" id="stProgK">아사나 도달</div>
+        <div class="bar"><i id="stBar"></i></div></div>
     </div>
   </header>
   <div class="toolbar">
@@ -208,7 +223,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
           <label for="dDate">날짜</label><input type="date" id="dDate" required>
           <label for="dTch">선생님</label><select id="dTch"></select>
         </div>
-        <textarea id="dText" placeholder="오늘 수련 전체는 어땠나요? 컨디션, 호흡, 선생님께 받은 조언…" required></textarea>
+        <textarea id="dText" placeholder="오늘 수련 전체는 어땠나요? 컨디션, 호흡, 선생님께 받은 조언… (Shift+Enter로 저장)" required></textarea>
         <button class="btn" type="submit">노트 저장</button>
       </form>
       <div class="log" id="dayLog"></div>
@@ -228,13 +243,15 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
       <div class="cap"><div class="sk" id="mSk"></div><div class="ko" id="mKo"></div><span class="tag" id="mTag" hidden></span></div>
     </div>
     <div class="m-right">
-      <div class="m-top"><h3 id="dlgTitle">수련 메모</h3><button class="x" id="mClose" aria-label="닫기">✕</button></div>
+      <div class="m-top"><h3 id="dlgTitle">수련 메모</h3>
+        <button class="mdone" id="mDone" type="button">완성 표시</button>
+        <button class="x" id="mClose" aria-label="닫기">✕</button></div>
       <form class="add" id="addForm">
         <div class="row">
           <label for="mDate">날짜</label><input type="date" id="mDate" required>
           <label for="mTch">선생님</label><select id="mTch"></select>
         </div>
-        <textarea id="mText" placeholder="오늘 이 자세는 어땠나요? 정렬, 호흡, 느낌…" required></textarea>
+        <textarea id="mText" placeholder="오늘 이 자세는 어땠나요? 정렬, 호흡, 느낌… (Shift+Enter로 저장)" required></textarea>
         <button class="btn" type="submit">메모 저장</button>
       </form>
       <div class="log" id="mLog"></div>
@@ -276,6 +293,7 @@ if(local && (local.updatedAt||"") > (state.updatedAt||"")) state = local;
 if(!state.notes) state.notes = {};
 if(!state.teachers) state.teachers = [];
 if(!state.days) state.days = {};
+if(!state.done) state.done = {};
 
 let art = null;
 const useCap = (window.claude && window.claude.use) ? window.claude.use("artifact") : Promise.resolve(null);
@@ -291,6 +309,8 @@ function setStatus(t, busy){ const el=$("#saveStatus"); el.textContent=t; el.cla
    and swap in the new state JSON. */
 function buildSrc(json){
   const root = document.documentElement.cloneNode(true);
+  root.removeAttribute("data-theme");
+  root.removeAttribute("style");
   const head = root.querySelector("head");
   if(head){
     let del = false;
@@ -435,6 +455,22 @@ const KDOW = ["일","월","화","수","목","금","토"];
 function notesOf(id){ return state.notes[id] || []; }
 function fmtD(d){ const [y,m,dd]=d.split("-"); return `${m}.${dd}`; }
 function poseById(id){ return POSES.find(p=>p.id===id); }
+const TRACKED = POSES.filter(p=>p.sec!=="surya");
+function isDone(id){ return !!state.done[id]; }
+function toggleDone(id){
+  if(state.done[id]) delete state.done[id]; else state.done[id] = Date.now();
+  renderMain(); syncMDone(); persist();
+}
+function syncMDone(){
+  const b = $("#mDone");
+  if(!openId){ b.hidden = true; return; }
+  const p = poseById(openId);
+  if(!p || p.sec === "surya"){ b.hidden = true; return; }
+  b.hidden = false;
+  const on = isDone(openId);
+  b.classList.toggle("on", on);
+  b.textContent = on ? "완성 ✓" : "완성 표시";
+}
 
 /* view mode + teacher filter (per browser) */
 let view = "pose", fTch = "";
@@ -495,10 +531,15 @@ function renderStats(){
     if(n.length){ memo+=n.length; days.add(d); }
   }
   $("#stMemo").textContent=memo; $("#stDays").textContent=days.size; $("#stPoses").textContent=poses;
+  const doneN = TRACKED.filter(p=>isDone(p.id)).length;
+  const pct = Math.round(doneN / TRACKED.length * 100);
+  $("#stProg").textContent = pct + "%";
+  $("#stProgK").textContent = `아사나 도달 ${doneN}/${TRACKED.length}`;
+  $("#stBar").style.width = pct + "%";
 }
 
-/* ---------- daily notes ---------- */
-function noteRow(x, onDelete){
+/* ---------- note rows (shared by pose log, daily log, date view) ---------- */
+function noteRow(x, onDelete, onChanged){
   const row = document.createElement("div"); row.className="note";
   const pEl = document.createElement("p"); pEl.textContent = x.t;
   row.appendChild(pEl);
@@ -506,6 +547,32 @@ function noteRow(x, onDelete){
     const chip = document.createElement("span"); chip.className="tchip"; chip.textContent = x.tch;
     row.appendChild(chip);
   }
+  const ed = document.createElement("button");
+  ed.className="del"; ed.type="button"; ed.textContent="수정"; ed.setAttribute("aria-label","메모 수정");
+  const finish = save => {
+    const ta = row.querySelector("textarea"); if(!ta) return;
+    const v = ta.value.trim();
+    ta.replaceWith(pEl);
+    ed.textContent = "수정";
+    if(save && v && v !== x.t){
+      x.t = v; pEl.textContent = v;
+      if(onChanged) onChanged(); else persist();
+    }
+  };
+  ed.addEventListener("click", ()=>{
+    if(row.querySelector("textarea")){ finish(true); return; }
+    const ta = document.createElement("textarea");
+    ta.value = x.t; ta.style.flex = "1"; ta.rows = 3;
+    ta.addEventListener("keydown", e=>{
+      if(e.key === "Enter" && e.shiftKey){ e.preventDefault(); finish(true); }
+      if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); finish(false); }
+    });
+    pEl.replaceWith(ta);
+    ed.textContent = "저장";
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  });
+  row.appendChild(ed);
   const del = document.createElement("button");
   del.className="del"; del.type="button"; del.textContent="삭제"; del.setAttribute("aria-label","메모 삭제");
   del.addEventListener("click", ()=>armDelete(del, onDelete));
@@ -557,21 +624,28 @@ function renderGrid(){
     if(!items.length) continue;
     const block = document.createElement("section"); block.className="block";
     const withMemo = items.filter(p=>fNotesOf(p.id).length).length;
+    const doneCnt = sec.key==="surya" ? "" :
+      ` · 완성 ${items.filter(p=>isDone(p.id)).length}/${items.length}`;
     block.innerHTML = `<div class="sec-head"><h2>${sec.ko}</h2><span class="en">${sec.en}</span>
-      <span class="cnt">${withMemo}/${items.length} 자세에 메모</span></div>`;
+      <span class="cnt">${withMemo}/${items.length} 자세에 메모${doneCnt}</span></div>`;
     const grid = document.createElement("div");
     grid.className = "grid" + (sec.key==="surya" ? " surya" : "");
     for(const p of items){
       const n = fNotesOf(p.id); const ld = lastDate(p.id);
+      const done = p.sec!=="surya" && isDone(p.id);
       const b = document.createElement("button");
-      b.className="card"; b.type="button"; b.dataset.id=p.id;
+      b.className="card" + (done ? " done" : ""); b.type="button"; b.dataset.id=p.id;
       b.innerHTML = `
-        <div class="well"><span class="no">${String(p.n).padStart(2,"0")}</span><img src="${p.img}" alt="${p.sk}" loading="lazy"></div>
+        <div class="well"><span class="no">${String(p.n).padStart(2,"0")}</span>
+          ${p.sec!=="surya" ? `<span class="chk${done?" on":""}" data-chk title="완성/미완성 전환">✓</span>` : ""}
+          <img src="${p.img}" alt="${p.sk}" loading="lazy"></div>
         <div class="names"><div class="sk">${p.sk}</div><div class="ko">${p.ko}</div></div>
         <div class="meta">${n.length
           ? `<span class="badge">메모 ${n.length}</span><span class="lastd">최근 ${fmtD(ld)}</span>`
           : `<span class="badge empty">메모 없음</span>`}</div>`;
       b.addEventListener("click", ()=>openPose(p.id));
+      const chk = b.querySelector("[data-chk]");
+      if(chk) chk.addEventListener("click", e=>{ e.stopPropagation(); toggleDone(p.id); });
       grid.appendChild(b);
     }
     block.appendChild(grid); app.appendChild(block);
@@ -650,9 +724,11 @@ function openPose(id){
   $("#mDate").value = new Date().toISOString().slice(0,10);
   $("#mText").value = "";
   fillTeacherSelects();
+  syncMDone();
   renderLog();
   $("#dlg").showModal();
 }
+$("#mDone").addEventListener("click", ()=>{ if(openId) toggleDone(openId); });
 function renderLog(){
   const log = $("#mLog"); log.innerHTML="";
   const n = notesOf(openId).slice().sort((a,b)=> b.d.localeCompare(a.d) || (b.ts||0)-(a.ts||0));
@@ -688,6 +764,16 @@ $("#mClose").addEventListener("click", ()=> $("#dlg").close());
 $("#dlg").addEventListener("click", e=>{ if(e.target === $("#dlg")) $("#dlg").close(); });
 $("#dlg").addEventListener("close", ()=>{ openId=null; });
 $("#filterMemo").addEventListener("change", renderMain);
+
+/* Shift+Enter saves from either textarea */
+for(const [taId, formId] of [["mText","addForm"],["dText","dayForm"]]){
+  document.getElementById(taId).addEventListener("keydown", e=>{
+    if(e.key === "Enter" && e.shiftKey){
+      e.preventDefault();
+      document.getElementById(formId).requestSubmit();
+    }
+  });
+}
 
 $("#dDate").value = new Date().toISOString().slice(0,10);
 fillTeacherSelects();
