@@ -166,7 +166,13 @@ dialog::backdrop{background:rgba(20,18,28,.55);backdrop-filter:blur(2px)}
 @media(max-width:700px){.modal{grid-template-columns:1fr;overflow-y:auto}}
 .m-left{background:var(--well);border-radius:16px 0 0 16px;padding:22px;display:flex;
   flex-direction:column;align-items:center;justify-content:center;gap:14px}
-@media(max-width:700px){.m-left{border-radius:16px 16px 0 0;padding:16px}}
+@media(max-width:700px){
+  .modal .m-left{border-radius:16px 16px 0 0;padding:12px 16px;flex-direction:row;
+    gap:14px;justify-content:flex-start;align-items:center}
+  .modal .m-left img{max-height:110px;max-width:42%}
+  .modal .m-left .cap{text-align:left;min-width:0}
+  .modal .m-left .cap .sk{font-size:14px}
+}
 .m-left img{max-width:100%;max-height:300px;object-fit:contain;mix-blend-mode:multiply}
 .m-left .cap{text-align:center;color:#4A463F}
 .m-left .cap .sk{font-family:"Gowun Batang",serif;font-weight:700;font-size:16px}
@@ -200,8 +206,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .day .d{font-family:"Gowun Batang",serif;font-weight:700;font-size:13.5px;
   color:var(--accent-ink);font-variant-numeric:tabular-nums}
 .day .dow{font-weight:400;color:var(--muted);font-size:12px;margin-left:5px}
-.note{display:flex;gap:8px;align-items:flex-start;margin-top:6px}
-.note p{margin:0;flex:1;white-space:pre-wrap;font-size:14px}
+.note{display:flex;flex-direction:column;gap:3px;margin-top:9px}
+.note p{margin:0;white-space:pre-wrap;font-size:14px}
+.note textarea{width:100%}
+.note-foot{display:flex;align-items:center;gap:9px}
+.note-foot .sp{flex:1}
 .note .del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;
   padding:2px 4px;border-radius:6px}
 .note .del:hover{color:var(--danger)}
@@ -214,7 +223,7 @@ footer{margin-top:56px;padding-top:14px;border-top:1px solid var(--line);
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
-<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:51:24.870Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787619078951,"tch":"한별","diff":3}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652}}</script>
+<script type="application/json" id="state">{"updatedAt":"2026-08-25T00:56:40.841Z","notes":{"parsvakonasana-a":[{"d":"2026-08-25","t":"배를 벽쪽으로 더 돌려서 골반을 틀어야 하는데 오른쪽 자세 할 때 잘 안된다. 무릎을 더 굽혀야 한다고 함..","ts":1787617132512,"tch":"한별"}],"marichyasana-d":[{"d":"2026-08-25","t":"마리차D 할 때 몸을 벽쪽으로 쭉 빼서 숙여서 감아야 잘 감김. 이걸 잘 해야 다음 자세(부자피다)도 잘 할 수 있다. 손목 잡는 것을 목표로!","ts":1787618265056,"tch":"한별"}],"bhujapidasana":[{"d":"2026-08-25","t":"부자피다 할 때 다리 뒤로 손을 받치고 90도로 팔에 싣는다는 느낌으로. 그리고 오른발을 위로 올리고 보내기! 어깨 힘을 많이 써야 하는듯. 어꺠가 말리면 안된다. 이거 뒤에 바카사나로 가는데, 바카사나 할 때는 다리를 모아서 들어야 등이 둥글어지고, 그래야 점프백 - 차투랑가까지 갈 수 있음.","ts":1787618371901,"tch":"한별"}],"urdhva-dhanurasana":[{"d":"2026-08-25","t":"좋은데 허리가 안좋아서.. 견갑을 모은다는 느낌으로 어깨를 더 펴야 한다. 더 필 수 있다! 앞 뒤로 3번 시키셨음. 어꺠를 펴야 컴업까지 된다.","ts":1787618505045,"tch":"한별"}],"surya-a":[{"d":"2026-08-25","t":"차투랑가 할 때 팔로만 힘을 쓰지말고 등이랑 같이 써서 둥글게! 그래야 나중에 점프백도 잘 할 수 있음.","ts":1787618559345,"tch":"한별"}],"prasarita-c":[{"d":"2026-08-25","t":"더 길게 쓰면 더 내려감! 죽을 것 같았는데 그래도 내려가긴 하더라.","ts":1787618614473,"tch":"한별"}],"uhp-b":[{"d":"2026-08-25","t":"오늘 오른다리는 좀 잘 됐다.","ts":1787618653380,"tch":"한별"}],"virabhadrasana-b":[{"d":"2026-08-25","t":"너무 팔에 힘주지 않고 좀 내려야 한다.","ts":1787618690148,"tch":"한별"}],"purvattanasana":[{"d":"2026-08-25","t":"아직 발 끝이 닿진 않지만..","ts":1787618706647,"tch":"한별"}],"janu-c":[{"d":"2026-08-25","t":"이상하게 오른발은 진짜 잘 되는데, 왼발은 새끼발까락쪽이 꺾여서 진짜 안된다. 이것도 골반 틀어져서 그런가.","ts":1787618738041,"tch":"한별"}],"urdhva-padmasana":[{"d":"2026-08-25","t":"약간 내 최애 동작...","ts":1787618791337,"tch":"한별"}],"pindasana":[{"d":"2026-08-25","t":"이것도 내 최애..","ts":1787618805105,"tch":"한별"}],"sirsasana-a":[{"d":"2026-08-25","t":"등을 둥글게!","ts":1787618817422,"tch":"한별"}],"yoga-mudra":[{"d":"2026-08-25","t":"이건 대체 누가 할 수 있는 자세일까???","ts":1787618830847,"tch":"한별"}]},"teachers":["한별","원장"],"days":{"2026-08-25":[{"t":"아침이라 허리가 좀 뻣뻣했는데 전체적인 컨디션은 좋았다. 갈까말까 고민할 땐 꼭 가야한다는 사실을 깨달았다. 땀 뻘뻘 하지만 충만한 하루 시작!","ts":1787619078951,"tch":"한별","diff":3}]},"done":{"navasana":1787618273426,"triang-mukha":1787618752611,"ardha-baddha-padma-paschimottanasana":1787618755844,"sarvangasana":1787618767640,"urdhva-padmasana":1787618777104,"halasana":1787618780216,"pindasana":1787618782848,"padmasana":1787618842652},"att":{"2026-08-21":true,"2026-08-20":true,"2026-08-18":true,"2026-08-13":true,"2026-08-12":true,"2026-08-11":true,"2026-08-08":true,"2026-08-07":true,"2026-08-06":true}}</script>
 
 <div class="wrap">
   <header class="top">
@@ -657,6 +666,7 @@ function noteRow(x, onDelete, onChanged){
   const row = document.createElement("div"); row.className="note";
   const pEl = document.createElement("p"); pEl.textContent = x.t;
   row.appendChild(pEl);
+  const foot = document.createElement("div"); foot.className = "note-foot";
   if(x.diff){
     const st = document.createElement("span"); st.className = "rstars";
     st.title = `수련 난이도 ${x.diff}/5`;
@@ -666,12 +676,14 @@ function noteRow(x, onDelete, onChanged){
       off.textContent = "★".repeat(5 - x.diff);
       st.appendChild(off);
     }
-    row.appendChild(st);
+    foot.appendChild(st);
   }
   if(x.tch){
     const chip = document.createElement("span"); chip.className="tchip"; chip.textContent = x.tch;
-    row.appendChild(chip);
+    foot.appendChild(chip);
   }
+  const sp = document.createElement("span"); sp.className = "sp";
+  foot.appendChild(sp);
   const ed = document.createElement("button");
   ed.className="del"; ed.type="button"; ed.textContent="수정"; ed.setAttribute("aria-label","메모 수정");
   const finish = save => {
@@ -687,7 +699,7 @@ function noteRow(x, onDelete, onChanged){
   ed.addEventListener("click", ()=>{
     if(row.querySelector("textarea")){ finish(true); return; }
     const ta = document.createElement("textarea");
-    ta.value = x.t; ta.style.flex = "1"; ta.rows = 3;
+    ta.value = x.t; ta.rows = 3;
     ta.addEventListener("keydown", e=>{
       if(e.key === "Enter" && e.shiftKey){ e.preventDefault(); finish(true); }
       if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); finish(false); }
@@ -697,11 +709,12 @@ function noteRow(x, onDelete, onChanged){
     ta.focus();
     ta.setSelectionRange(ta.value.length, ta.value.length);
   });
-  row.appendChild(ed);
+  foot.appendChild(ed);
   const del = document.createElement("button");
   del.className="del"; del.type="button"; del.textContent="삭제"; del.setAttribute("aria-label","메모 삭제");
   del.addEventListener("click", ()=>armDelete(del, onDelete));
-  row.appendChild(del);
+  foot.appendChild(del);
+  row.appendChild(foot);
   return row;
 }
 function renderDayLog(){
