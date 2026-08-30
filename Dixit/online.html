@@ -230,6 +230,8 @@ const SKIES = [
   ["#0f3a3f", "#1f6b63", "#63a68f"],
   ["#4a2a12", "#a8632b", "#f0c674"],
   ["#1a1240", "#3a2a75", "#7e5aa8"],
+  ["#301b4d", "#6b2d5e", "#c2586b"],
+  ["#12283d", "#2d5a66", "#5fa8a0"],
 ];
 
 function stars(rng, n) {
@@ -396,15 +398,18 @@ const MOTIFS = [
 
 function cardArt(id, w) {
   const rng = mulberry32(id * 7919 + 13);
-  const sky = pick(rng, SKIES);
+  // (하늘 × 모티프) 조합을 고정 순열로 배정: 96 = 8하늘 × 12모티프, gcd(61, 96) = 1
+  // 이라 id → combo가 전단사이므로 84장 모두 서로 다른 조합을 갖는다
+  const combo = ((id - 1) * 61) % 96;
+  const sky = SKIES[Math.floor(combo / MOTIFS.length) % SKIES.length];
+  const motif = MOTIFS[combo % MOTIFS.length];
   const palette = {
-    glow: pick(rng, ["#f6e7b2", "#ffe9c9", "#f9f2d9", "#ffdfa6"]),
-    warm: pick(rng, ["#e0879b", "#f0a05e", "#dd8fa8", "#e8b04f", "#d9788f"]),
-    cool: pick(rng, ["#5a7fc0", "#63a68f", "#7e5aa8", "#4f8fa8", "#8a6fc0"]),
+    glow: ["#f6e7b2", "#ffe9c9", "#f9f2d9", "#ffdfa6"][(id + Math.floor(combo / 12)) % 4],
+    warm: ["#e0879b", "#f0a05e", "#8fc7b0", "#e8c04f", "#9b8fe0"][(id * 11 + 5) % 5],
+    cool: ["#5a7fc0", "#63a68f", "#7e5aa8", "#4f8fa8", "#c06f9b"][(id * 13 + 1) % 5],
     dark: "#20183f",
     cream: "#f6efdf",
   };
-  const motif = pick(rng, MOTIFS);
   const groundKind = rng();
   let ground = "";
   if (groundKind < 0.45) ground = hills(rng, rand(rng, 40, 70), "#20183f");
