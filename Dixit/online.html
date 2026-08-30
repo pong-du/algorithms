@@ -224,48 +224,91 @@ function rand(rng, min, max) { return min + rng() * (max - min); }
 
 /* ---------- 카드 아트 생성 (200x300 SVG) ---------- */
 const SKIES = [
-  ["#241a54", "#5b3a8f", "#c86f9b"],
-  ["#0d1b3d", "#1f3b73", "#3f6fa8"],
-  ["#3f1a3c", "#8f3b6b", "#e0879b"],
-  ["#0f3a3f", "#1f6b63", "#63a68f"],
-  ["#4a2a12", "#a8632b", "#f0c674"],
-  ["#1a1240", "#3a2a75", "#7e5aa8"],
-  ["#301b4d", "#6b2d5e", "#c2586b"],
-  ["#12283d", "#2d5a66", "#5fa8a0"],
+  ["#241a54", "#4b2f85", "#8a4f92", "#e8927c"],
+  ["#0a1430", "#16295c", "#2c4a8a", "#4a6fa8"],
+  ["#3f1a3c", "#7a2f63", "#b3527c", "#eda186"],
+  ["#0c2f33", "#175951", "#2f8577", "#63a68f"],
+  ["#4a2510", "#8a4a1f", "#c77b35", "#f0c674"],
+  ["#150e38", "#2f2168", "#54409b", "#8a6bb8"],
+  ["#2a1030", "#5c2050", "#94406b", "#cf7178"],
+  ["#0a2030", "#123f4f", "#20666e", "#4f9a94"],
 ];
+
+function glowHalo(x, y, r, color) {
+  return `<circle cx="${x}" cy="${y}" r="${(r * 2.1).toFixed(0)}" fill="${color}" opacity=".1"/>
+    <circle cx="${x}" cy="${y}" r="${(r * 1.5).toFixed(0)}" fill="${color}" opacity=".16"/>`;
+}
 
 function stars(rng, n) {
   let s = "";
   for (let i = 0; i < n; i++) {
-    const x = rand(rng, 8, 192), y = rand(rng, 8, 170);
-    const r = rand(rng, 0.7, 1.9);
-    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#fff" opacity="${rand(rng, .35, .9).toFixed(2)}"/>`;
+    const x = rand(rng, 8, 192), y = rand(rng, 8, 175);
+    if (rng() < 0.18) {
+      const r = rand(rng, 2.4, 4);
+      s += `<g stroke="#fff" stroke-width="1" stroke-linecap="round" opacity="${rand(rng, .5, .9).toFixed(2)}">
+        <line x1="${(x - r).toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + r).toFixed(1)}" y2="${y.toFixed(1)}"/>
+        <line x1="${x.toFixed(1)}" y1="${(y - r).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(y + r).toFixed(1)}"/>
+      </g>`;
+    } else {
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rand(rng, .6, 1.8).toFixed(1)}" fill="#fff" opacity="${rand(rng, .3, .9).toFixed(2)}"/>`;
+    }
   }
   return s;
 }
+
+function shootingStar(rng) {
+  const x = rand(rng, 40, 160), y = rand(rng, 18, 60), len = rand(rng, 26, 44);
+  return `<line x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x + len).toFixed(0)}" y2="${(y - len * .4).toFixed(0)}" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+    <circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="2" fill="#fff" opacity=".9"/>`;
+}
+
 function cloud(rng, x, y, w, color, op) {
   return `<g fill="${color}" opacity="${op}">
-    <ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w * .34}"/>
-    <ellipse cx="${x - w * .5}" cy="${y + 3}" rx="${w * .55}" ry="${w * .22}"/>
-    <ellipse cx="${x + w * .55}" cy="${y + 2}" rx="${w * .5}" ry="${w * .2}"/>
+    <ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w * .3}"/>
+    <ellipse cx="${x - w * .55}" cy="${y + 3}" rx="${w * .55}" ry="${w * .2}"/>
+    <ellipse cx="${x + w * .6}" cy="${y + 2}" rx="${w * .5}" ry="${w * .18}"/>
+    <ellipse cx="${x + w * .1}" cy="${y - w * .16}" rx="${w * .5}" ry="${w * .16}" opacity=".7"/>
   </g>`;
 }
+
+function fireflies(rng, n, color, yMin, yMax) {
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const x = rand(rng, 12, 188), y = rand(rng, yMin, yMax), r = rand(rng, 1.4, 2.6);
+    s += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(r * 2.4).toFixed(1)}" fill="${color}" opacity=".14"/>
+      <circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r.toFixed(1)}" fill="${color}" opacity=".85"/>`;
+  }
+  return s;
+}
+
 function hills(rng, base, color) {
-  const y1 = 300 - base, r1 = rand(rng, 70, 130), x1 = rand(rng, 20, 90);
+  const r1 = rand(rng, 80, 130), x1 = rand(rng, 15, 90);
   const r2 = rand(rng, 60, 110), x2 = rand(rng, 110, 185);
-  return `<g fill="${color}">
-    <circle cx="${x1}" cy="${300 + r1 - base}" r="${r1 + base * .6}"/>
-    <circle cx="${x2}" cy="${300 + r2 - base + 12}" r="${r2 + base * .5}"/>
-    <rect x="0" y="${y1 + 40}" width="200" height="${base + 40}"/>
-  </g>`;
+  const rb = rand(rng, 90, 140), xb = rand(rng, 40, 160);
+  return `<g fill="${color}" opacity=".45">
+      <circle cx="${xb}" cy="${300 + rb - base - 26}" r="${rb + base * .55}"/>
+    </g>
+    <g fill="${color}">
+      <circle cx="${x1}" cy="${300 + r1 - base}" r="${r1 + base * .6}"/>
+      <circle cx="${x2}" cy="${300 + r2 - base + 12}" r="${r2 + base * .5}"/>
+      <rect x="0" y="${300 - base + 40}" width="200" height="${base}"/>
+    </g>`;
 }
+
 function sea(rng, base, color) {
   let waves = "";
   for (let i = 0; i < 4; i++) {
     const y = 300 - base + 12 + i * 14;
     waves += `<path d="M0 ${y} Q 25 ${y - 5} 50 ${y} T 100 ${y} T 150 ${y} T 200 ${y}" stroke="#ffffff" stroke-width="1.4" fill="none" opacity="${(0.35 - i * 0.06).toFixed(2)}"/>`;
   }
-  return `<rect x="0" y="${300 - base}" width="200" height="${base}" fill="${color}"/>${waves}`;
+  let glints = "";
+  const gx = rand(rng, 60, 140);
+  for (let i = 0; i < 5; i++) {
+    const y = 300 - base + 8 + i * 11;
+    const w2 = rand(rng, 8, 22);
+    glints += `<line x1="${(gx - w2 + rand(rng, -8, 8)).toFixed(0)}" y1="${y}" x2="${(gx + w2).toFixed(0)}" y2="${y}" stroke="#f6e7b2" stroke-width="2" stroke-linecap="round" opacity="${(0.3 - i * 0.04).toFixed(2)}"/>`;
+  }
+  return `<rect x="0" y="${300 - base}" width="200" height="${base}" fill="${color}"/>${waves}${glints}`;
 }
 
 const MOTIFS = [
@@ -274,9 +317,12 @@ const MOTIFS = [
     let rungs = "";
     const lx = mx - 8, topY = my + r - 6, botY = 288;
     for (let y = topY + 14; y < botY; y += 16) rungs += `<line x1="${lx - 7}" y1="${y}" x2="${lx + 7}" y2="${y}"/>`;
-    return `<circle cx="${mx}" cy="${my}" r="${r}" fill="${c.glow}"/>
+    return `${glowHalo(mx, my, r, c.glow)}
+      <circle cx="${mx}" cy="${my}" r="${r}" fill="${c.glow}"/>
       <circle cx="${mx - r * .3}" cy="${my - r * .2}" r="${r * .16}" fill="#00000018"/>
       <circle cx="${mx + r * .25}" cy="${my + r * .3}" r="${r * .11}" fill="#00000015"/>
+      <circle cx="${mx + r * .05}" cy="${my - r * .45}" r="${r * .08}" fill="#00000012"/>
+      <path d="M${mx - r * .55} ${my + r * .62} A ${r} ${r} 0 0 0 ${mx + r * .55} ${my + r * .62}" stroke="#00000010" stroke-width="3" fill="none"/>
       <g stroke="${c.dark}" stroke-width="3" stroke-linecap="round">
         <line x1="${lx - 7}" y1="${topY}" x2="${lx - 7}" y2="${botY}"/>
         <line x1="${lx + 7}" y1="${topY}" x2="${lx + 7}" y2="${botY}"/>${rungs}</g>`;
@@ -284,61 +330,89 @@ const MOTIFS = [
   function balloon(rng, c) { // 열기구
     const bx = rand(rng, 60, 140), by = rand(rng, 70, 110), r = rand(rng, 30, 40);
     const basketY = by + r + 26;
-    return `<circle cx="${bx}" cy="${by}" r="${r}" fill="${c.warm}"/>
+    return `${glowHalo(bx, by, r * .8, c.warm)}
+      <circle cx="${bx}" cy="${by}" r="${r}" fill="${c.warm}"/>
+      <ellipse cx="${bx}" cy="${by}" rx="${r * .62}" ry="${r}" fill="#00000014"/>
+      <ellipse cx="${bx}" cy="${by}" rx="${r * .3}" ry="${r}" fill="#ffffff22"/>
       <path d="M${bx - r} ${by} A ${r} ${r} 0 0 1 ${bx + r} ${by}" fill="#ffffff2a"/>
-      <ellipse cx="${bx}" cy="${by}" rx="${r * .45}" ry="${r}" fill="#00000022"/>
+      <circle cx="${bx - r * .35}" cy="${by - r * .4}" r="${r * .16}" fill="#ffffff44"/>
       <line x1="${bx - r * .6}" y1="${by + r * .75}" x2="${bx - 8}" y2="${basketY}" stroke="${c.dark}" stroke-width="2"/>
       <line x1="${bx + r * .6}" y1="${by + r * .75}" x2="${bx + 8}" y2="${basketY}" stroke="${c.dark}" stroke-width="2"/>
-      <rect x="${bx - 10}" y="${basketY}" width="20" height="14" rx="3" fill="${c.dark}"/>`;
+      <rect x="${bx - 10}" y="${basketY}" width="20" height="14" rx="3" fill="${c.dark}"/>
+      <line x1="${bx - 10}" y1="${basketY + 7}" x2="${bx + 10}" y2="${basketY + 7}" stroke="#ffffff28" stroke-width="1.6"/>
+      <circle cx="${bx - 14}" cy="${basketY + 18}" r="2.6" fill="${c.dark}"/>
+      <circle cx="${bx + 14}" cy="${basketY + 18}" r="2.6" fill="${c.dark}"/>`;
   },
   function whale(rng, c) { // 하늘 고래
-    const wx = rand(rng, 85, 115), wy = rand(rng, 120, 170), s = rand(rng, .8, 1.15);
+    const wx = rand(rng, 85, 115), wy = rand(rng, 120, 170), s = rand(rng, .8, 1.1);
     return `<g transform="translate(${wx} ${wy}) scale(${s.toFixed(2)})">
       <ellipse cx="0" cy="0" rx="62" ry="26" fill="${c.cool}"/>
       <path d="M56 -4 L86 -22 L80 2 L88 20 L58 8 Z" fill="${c.cool}"/>
+      <path d="M-10 22 L8 34 L14 20 Z" fill="${c.cool}"/>
       <ellipse cx="-6" cy="10" rx="50" ry="13" fill="#ffffff30"/>
+      <path d="M-52 8 Q -20 16 20 12" stroke="#ffffff2e" stroke-width="2" fill="none"/>
+      <path d="M-50 14 Q -18 22 18 18" stroke="#ffffff22" stroke-width="2" fill="none"/>
       <circle cx="-38" cy="-6" r="3.4" fill="#141031"/>
+      <circle cx="-37" cy="-7" r="1" fill="#ffffffcc"/>
       <circle cx="-52" cy="-34" r="3" fill="#ffffffaa"/>
       <circle cx="-46" cy="-46" r="4.4" fill="#ffffff88"/>
       <circle cx="-56" cy="-56" r="5.5" fill="#ffffff66"/>
+      <g fill="${c.glow}"><circle cx="70" cy="-40" r="1.8"/><circle cx="82" cy="-30" r="1.4"/><circle cx="64" cy="-52" r="1.4"/></g>
     </g>`;
   },
   function lonelyDoor(rng, c) { // 홀로 선 문
     const dx = rand(rng, 75, 125), dy = 176;
     return `<ellipse cx="${dx}" cy="${dy + 86}" rx="52" ry="12" fill="#00000030"/>
+      <polygon points="${dx - 18},${dy + 82} ${dx + 18},${dy + 82} ${dx + 44},${dy + 96} ${dx - 44},${dy + 96}" fill="${c.glow}" opacity=".25"/>
       <rect x="${dx - 30}" y="${dy - 10}" width="60" height="96" rx="6" fill="${c.dark}"/>
       <rect x="${dx - 22}" y="${dy - 2}" width="44" height="80" rx="4" fill="${c.glow}"/>
       <circle cx="${dx + 13}" cy="${dy + 40}" r="3.2" fill="${c.dark}"/>
-      <line x1="${dx}" y1="${dy - 2}" x2="${dx}" y2="${dy + 78}" stroke="${c.dark}" stroke-width="2" opacity=".5"/>`;
+      <line x1="${dx}" y1="${dy - 2}" x2="${dx}" y2="${dy + 78}" stroke="${c.dark}" stroke-width="2" opacity=".5"/>
+      <line x1="${dx - 22}" y1="${dy + 38}" x2="${dx + 22}" y2="${dy + 38}" stroke="${c.dark}" stroke-width="1.6" opacity=".35"/>
+      ${glowHalo(dx, dy + 38, 34, c.glow)}`;
   },
   function skyStairs(rng, c) { // 하늘 계단
     let steps = "";
     let x = rand(rng, 18, 40), y = 268;
     for (let i = 0; i < 8; i++) {
-      steps += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="42" height="12" rx="3" fill="${c.dark}" opacity="${(1 - i * 0.07).toFixed(2)}"/>`;
+      steps += `<polygon points="${(x + 42).toFixed(0)},${y.toFixed(0)} ${(x + 48).toFixed(0)},${(y + 5).toFixed(0)} ${(x + 48).toFixed(0)},${(y + 15).toFixed(0)} ${(x + 42).toFixed(0)},${(y + 12).toFixed(0)}" fill="${c.dark}" opacity="${(0.6 - i * 0.05).toFixed(2)}"/>
+        <rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="42" height="12" rx="3" fill="${c.dark}" opacity="${(1 - i * 0.07).toFixed(2)}"/>`;
       x += rand(rng, 12, 20); y -= 26;
     }
-    return steps + `<circle cx="${x + 26}" cy="${y + 4}" r="17" fill="${c.glow}"/>`;
+    const mx = x + 26, my = y + 4;
+    return steps + `${glowHalo(mx, my, 17, c.glow)}<circle cx="${mx}" cy="${my}" r="17" fill="${c.glow}"/>
+      <circle cx="${mx - 5}" cy="${my - 4}" r="2.8" fill="#00000015"/>`;
   },
   function paperBoat(rng, c) { // 종이배
     const bx = rand(rng, 70, 130), by = rand(rng, 200, 232);
     return `<g transform="translate(${bx} ${by})">
+      ${glowHalo(0, -40, 6, c.glow)}
       <path d="M-40 0 L40 0 L22 20 L-22 20 Z" fill="${c.warm}"/>
+      <path d="M-40 0 L-22 20 L-10 20 L-24 0 Z" fill="#00000018"/>
       <path d="M0 -30 L20 0 L-20 0 Z" fill="#ffffffd8"/>
       <path d="M0 -30 L0 0 L-20 0 Z" fill="#ffffffa8"/>
-      <circle cx="0" cy="-40" r="5" fill="${c.glow}"/>
+      <line x1="0" y1="-30" x2="0" y2="-38" stroke="#ffffff90" stroke-width="1.6"/>
+      <circle cx="0" cy="-41" r="4.4" fill="${c.glow}"/>
+      <path d="M-30 28 Q 0 33 30 28" stroke="${c.glow}" stroke-width="2" fill="none" opacity=".3"/>
     </g>`;
   },
   function lanternTree(rng, c) { // 등불 나무
     const tx = rand(rng, 80, 120);
     let dots = "";
     for (let i = 0; i < 7; i++) {
-      dots += `<circle cx="${(tx + rand(rng, -38, 38)).toFixed(0)}" cy="${rand(rng, 110, 165).toFixed(0)}" r="${rand(rng, 3, 5.4).toFixed(1)}" fill="${c.glow}"/>`;
+      const lx2 = (tx + rand(rng, -38, 38)).toFixed(0), ly2 = rand(rng, 110, 165).toFixed(0);
+      const lr = rand(rng, 3, 5.2);
+      dots += `<circle cx="${lx2}" cy="${ly2}" r="${(lr * 2).toFixed(1)}" fill="${c.glow}" opacity=".16"/>
+        <circle cx="${lx2}" cy="${ly2}" r="${lr.toFixed(1)}" fill="${c.glow}"/>`;
     }
     return `<path d="M${tx - 5} 268 L${tx - 9} 180 L${tx + 9} 180 L${tx + 5} 268 Z" fill="${c.dark}"/>
+      <path d="M${tx - 2} 220 Q ${tx - 16} 210 ${tx - 22} 196" stroke="${c.dark}" stroke-width="4" fill="none"/>
       <circle cx="${tx}" cy="140" r="46" fill="${c.cool}" opacity=".92"/>
-      <circle cx="${tx - 30}" cy="160" r="26" fill="${c.cool}" opacity=".8"/>
-      <circle cx="${tx + 32}" cy="156" r="24" fill="${c.cool}" opacity=".8"/>${dots}`;
+      <circle cx="${tx - 30}" cy="${160}" r="26" fill="${c.cool}" opacity=".8"/>
+      <circle cx="${tx + 32}" cy="156" r="24" fill="${c.cool}" opacity=".8"/>
+      <circle cx="${tx - 12}" cy="128" r="20" fill="#ffffff1e"/>${dots}
+      <circle cx="${tx + 46}" cy="230" r="1.8" fill="${c.glow}" opacity=".8"/>
+      <circle cx="${tx - 52}" cy="248" r="1.4" fill="${c.glow}" opacity=".6"/>`;
   },
   function jellyfish(rng, c) { // 해파리
     const jx = rand(rng, 75, 125), jy = rand(rng, 90, 130), r = rand(rng, 30, 40);
@@ -347,18 +421,26 @@ const MOTIFS = [
       const lx = jx + i * (r * .34);
       legs += `<path d="M${lx} ${jy + 6} q 7 26 -4 48 q -8 20 3 40" stroke="${c.glow}" stroke-width="2.6" fill="none" opacity=".8"/>`;
     }
-    return `<path d="M${jx - r} ${jy} A ${r} ${r} 0 0 1 ${jx + r} ${jy} Q ${jx + r * .6} ${jy + 12} ${jx} ${jy + 8} Q ${jx - r * .6} ${jy + 12} ${jx - r} ${jy} Z" fill="${c.warm}" opacity=".95"/>
-      <path d="M${jx - r * .6} ${jy - r * .3} A ${r * .8} ${r * .8} 0 0 1 ${jx + r * .5} ${jy - r * .5}" stroke="#ffffff66" stroke-width="4" fill="none"/>${legs}`;
+    return `${glowHalo(jx, jy, r, c.warm)}
+      <path d="M${jx - r} ${jy} A ${r} ${r} 0 0 1 ${jx + r} ${jy} Q ${jx + r * .6} ${jy + 12} ${jx} ${jy + 8} Q ${jx - r * .6} ${jy + 12} ${jx - r} ${jy} Z" fill="${c.warm}" opacity=".95"/>
+      <path d="M${jx - r * .6} ${jy - r * .3} A ${r * .8} ${r * .8} 0 0 1 ${jx + r * .5} ${jy - r * .5}" stroke="#ffffff66" stroke-width="4" fill="none"/>
+      <circle cx="${jx - r * .3}" cy="${jy - r * .1}" r="2.4" fill="#ffffff55"/>
+      <circle cx="${jx + r * .25}" cy="${jy - r * .25}" r="2" fill="#ffffff44"/>
+      <circle cx="${jx}" cy="${jy + r * .05}" r="1.8" fill="#ffffff3a"/>${legs}`;
   },
   function lighthouse(rng, c) { // 등대
     const lx = rand(rng, 80, 120);
-    return `<polygon points="${lx - 16},262 ${lx + 16},262 ${lx + 10},150 ${lx - 10},150" fill="${c.warm}"/>
+    return `<polygon points="${lx + 8},136 196,110 196,168" fill="${c.glow}" opacity=".28"/>
+      <polygon points="${lx - 8},136 4,112 4,166" fill="${c.glow}" opacity=".2"/>
+      <ellipse cx="${lx}" cy="266" rx="34" ry="9" fill="#00000035"/>
+      <polygon points="${lx - 16},262 ${lx + 16},262 ${lx + 10},150 ${lx - 10},150" fill="${c.warm}"/>
+      <polygon points="${lx - 16},262 ${lx - 4},262 ${lx - 2},150 ${lx - 10},150" fill="#ffffff1c"/>
       <rect x="${lx - 16}" y="196" width="32" height="12" fill="${c.dark}" opacity=".55"/>
       <rect x="${lx - 16}" y="228" width="32" height="12" fill="${c.dark}" opacity=".55"/>
       <rect x="${lx - 12}" y="134" width="24" height="16" rx="3" fill="${c.dark}"/>
+      ${glowHalo(lx, 142, 8, c.glow)}
       <circle cx="${lx}" cy="142" r="6" fill="${c.glow}"/>
-      <polygon points="${lx + 8},136 196,110 196,168" fill="${c.glow}" opacity=".28"/>
-      <polygon points="${lx - 8},136 4,112 4,166" fill="${c.glow}" opacity=".2"/>`;
+      <polygon points="${lx - 13},134 ${lx},124 ${lx + 13},134" fill="${c.dark}"/>`;
   },
   function eyeMoon(rng, c) { // 하늘의 눈
     const ex = rand(rng, 75, 125), ey = rand(rng, 80, 115);
@@ -369,61 +451,171 @@ const MOTIFS = [
       const x2 = ex + Math.cos(a) * 58, y2 = ey + Math.sin(a) * 38;
       lash += `<line x1="${x1.toFixed(0)}" y1="${y1.toFixed(0)}" x2="${x2.toFixed(0)}" y2="${y2.toFixed(0)}" stroke="${c.glow}" stroke-width="2.4" stroke-linecap="round"/>`;
     }
-    return `<ellipse cx="${ex}" cy="${ey}" rx="46" ry="27" fill="${c.cream || "#f6efdf"}"/>
+    return `${glowHalo(ex, ey, 34, c.glow)}
+      <ellipse cx="${ex}" cy="${ey}" rx="46" ry="27" fill="${c.cream}"/>
       <circle cx="${ex}" cy="${ey}" r="16" fill="${c.cool}"/>
+      <circle cx="${ex}" cy="${ey}" r="16" fill="none" stroke="#00000022" stroke-width="2"/>
       <circle cx="${ex}" cy="${ey}" r="7" fill="#141031"/>
-      <circle cx="${ex + 4}" cy="${ey - 5}" r="3" fill="#ffffffcc"/>${lash}`;
+      <circle cx="${ex + 4}" cy="${ey - 5}" r="3" fill="#ffffffcc"/>
+      <circle cx="${ex - 5}" cy="${ey + 4}" r="1.4" fill="#ffffff77"/>
+      <path d="M${ex - 10} ${ey + 40} q 4 8 10 0 q -5 -10 -10 0" fill="${c.glow}" opacity=".8"/>${lash}`;
   },
   function umbrellaRain(rng, c) { // 우산과 별비
     const ux = rand(rng, 75, 125), uy = rand(rng, 130, 160);
     let drops = "";
     for (let i = 0; i < 10; i++) {
       const x = rand(rng, 15, 185), y = rand(rng, 20, uy - 44);
-      drops += `<line x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x - 5).toFixed(0)}" y2="${(y + 13).toFixed(0)}" stroke="${c.glow}" stroke-width="2" stroke-linecap="round" opacity=".75"/>`;
+      drops += `<line x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x - 5).toFixed(0)}" y2="${(y + 13).toFixed(0)}" stroke="${c.glow}" stroke-width="2" stroke-linecap="round" opacity=".75"/>
+        <circle cx="${x.toFixed(0)}" cy="${(y - 2).toFixed(0)}" r="1.2" fill="${c.glow}" opacity=".9"/>`;
     }
-    return `${drops}<path d="M${ux - 52} ${uy} A 52 52 0 0 1 ${ux + 52} ${uy} Z" fill="${c.warm}"/>
+    return `${drops}
+      <path d="M${ux - 52} ${uy} A 52 52 0 0 1 ${ux + 52} ${uy} Z" fill="${c.warm}"/>
       <path d="M${ux - 52} ${uy} A 52 52 0 0 1 ${ux} ${uy - 52} L ${ux} ${uy} Z" fill="#ffffff26"/>
+      <path d="M${ux - 52} ${uy} Q ${ux - 39} ${uy - 6} ${ux - 26} ${uy} Q ${ux - 13} ${uy - 6} ${ux} ${uy} Q ${ux + 13} ${uy - 6} ${ux + 26} ${uy} Q ${ux + 39} ${uy - 6} ${ux + 52} ${uy}" stroke="#00000028" stroke-width="2" fill="none"/>
+      <line x1="${ux - 26}" y1="${uy - 2}" x2="${ux - 8}" y2="${uy - 50}" stroke="#00000018" stroke-width="1.6"/>
+      <line x1="${ux + 26}" y1="${uy - 2}" x2="${ux + 8}" y2="${uy - 50}" stroke="#00000018" stroke-width="1.6"/>
+      <circle cx="${ux}" cy="${uy - 54}" r="2.6" fill="${c.warm}"/>
       <path d="M${ux} ${uy} L ${ux} ${uy + 74} q 0 12 12 12" stroke="${c.dark}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
   },
   function islandFloat(rng, c) { // 떠 있는 섬
     const ix = rand(rng, 80, 120), iy = rand(rng, 120, 150);
     return `<polygon points="${ix - 52},${iy} ${ix + 52},${iy} ${ix + 20},${iy + 52} ${ix - 26},${iy + 44}" fill="${c.dark}"/>
+      <path d="M${ix - 40} ${iy + 14} L ${ix + 40} ${iy + 12}" stroke="#ffffff14" stroke-width="2"/>
+      <path d="M${ix - 30} ${iy + 26} L ${ix + 30} ${iy + 24}" stroke="#ffffff0e" stroke-width="2"/>
+      <path d="M${ix - 20} ${iy + 44} q 2 14 -3 24" stroke="${c.dark}" stroke-width="2.4" fill="none"/>
+      <path d="M${ix + 12} ${iy + 50} q 2 12 -2 20" stroke="${c.dark}" stroke-width="2" fill="none"/>
       <ellipse cx="${ix}" cy="${iy}" rx="52" ry="13" fill="${c.cool}"/>
+      <ellipse cx="${ix - 14}" cy="${iy - 3}" rx="26" ry="6" fill="#ffffff1e"/>
       <path d="M${ix - 8} ${iy - 4} L${ix - 11} ${iy - 40} L${ix - 3} ${iy - 40} L${ix - 6} ${iy - 4} Z" fill="${c.dark}"/>
+      ${glowHalo(ix - 7, iy - 52, 17, c.warm)}
       <circle cx="${ix - 7}" cy="${iy - 52}" r="17" fill="${c.warm}"/>
+      <circle cx="${ix - 12}" cy="${iy - 57}" r="5" fill="#ffffff33"/>
       <circle cx="${ix + 30}" cy="${iy + 62}" r="4" fill="${c.glow}" opacity=".7"/>
       <circle cx="${ix - 38}" cy="${iy + 70}" r="3" fill="${c.glow}" opacity=".55"/>`;
+  },
+  function catMoon(rng, c) { // 지붕 위 고양이
+    const mx = rand(rng, 85, 115), my = rand(rng, 78, 100), r = rand(rng, 40, 50);
+    const cx2 = mx + rand(rng, -12, 12), ridge = 212;
+    return `${glowHalo(mx, my, r, c.glow)}
+      <circle cx="${mx}" cy="${my}" r="${r}" fill="${c.glow}"/>
+      <circle cx="${mx - r * .3}" cy="${my - r * .15}" r="${r * .14}" fill="#00000014"/>
+      <circle cx="${mx + r * .2}" cy="${my + r * .3}" r="${r * .1}" fill="#00000012"/>
+      <polygon points="0,300 0,${ridge + 34} 100,${ridge} 200,${ridge + 34} 200,300" fill="${c.dark}"/>
+      <line x1="0" y1="${ridge + 35}" x2="100" y2="${ridge + 1}" stroke="#ffffff16" stroke-width="2"/>
+      <line x1="100" y1="${ridge + 1}" x2="200" y2="${ridge + 35}" stroke="#ffffff16" stroke-width="2"/>
+      <g fill="${c.dark}">
+        <ellipse cx="${cx2}" cy="${ridge - 14}" rx="13" ry="15"/>
+        <circle cx="${cx2}" cy="${ridge - 36}" r="9"/>
+        <polygon points="${cx2 - 8},${ridge - 41} ${cx2 - 6},${ridge - 52} ${cx2 - 1},${ridge - 43}"/>
+        <polygon points="${cx2 + 8},${ridge - 41} ${cx2 + 6},${ridge - 52} ${cx2 + 1},${ridge - 43}"/>
+        <path d="M${cx2 + 11} ${ridge - 8} q 16 2 14 -18" stroke="${c.dark}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </g>
+      <circle cx="${cx2 - 3}" cy="${ridge - 37}" r="1.2" fill="${c.glow}"/>
+      <circle cx="${cx2 + 3}" cy="${ridge - 37}" r="1.2" fill="${c.glow}"/>`;
+  },
+  function starClock(rng, c) { // 별에 매달린 회중시계
+    const wx = rand(rng, 80, 120), wy = rand(rng, 150, 180), r = rand(rng, 28, 36);
+    const sx = wx + rand(rng, -10, 10), sy = rand(rng, 40, 60);
+    const ha = rand(rng, 0, Math.PI * 2), ma = rand(rng, 0, Math.PI * 2);
+    let ticks = "";
+    for (let i = 0; i < 12; i++) {
+      const a = (Math.PI * 2 * i) / 12;
+      ticks += `<line x1="${(wx + Math.cos(a) * (r - 4)).toFixed(1)}" y1="${(wy + Math.sin(a) * (r - 4)).toFixed(1)}" x2="${(wx + Math.cos(a) * (r - 8)).toFixed(1)}" y2="${(wy + Math.sin(a) * (r - 8)).toFixed(1)}" stroke="${c.dark}" stroke-width="2"/>`;
+    }
+    return `<g stroke="${c.glow}" stroke-width="2" stroke-linecap="round" opacity=".9">
+        <line x1="${sx - 6}" y1="${sy}" x2="${sx + 6}" y2="${sy}"/>
+        <line x1="${sx}" y1="${sy - 6}" x2="${sx}" y2="${sy + 6}"/>
+      </g>
+      <path d="M${sx} ${sy + 6} Q ${wx} ${(sy + wy) / 2} ${wx} ${wy - r - 12}" stroke="${c.glow}" stroke-width="1.6" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>
+      <circle cx="${wx}" cy="${wy - r - 8}" r="4" fill="none" stroke="${c.warm}" stroke-width="2.4"/>
+      ${glowHalo(wx, wy, r, c.warm)}
+      <circle cx="${wx}" cy="${wy}" r="${r + 5}" fill="${c.warm}"/>
+      <circle cx="${wx}" cy="${wy}" r="${r}" fill="${c.cream}"/>
+      ${ticks}
+      <line x1="${wx}" y1="${wy}" x2="${(wx + Math.cos(ha) * r * .45).toFixed(1)}" y2="${(wy + Math.sin(ha) * r * .45).toFixed(1)}" stroke="${c.dark}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="${wx}" y1="${wy}" x2="${(wx + Math.cos(ma) * r * .7).toFixed(1)}" y2="${(wy + Math.sin(ma) * r * .7).toFixed(1)}" stroke="${c.dark}" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="${wx}" cy="${wy}" r="2.6" fill="${c.dark}"/>`;
+  },
+  function birdcage(rng, c) { // 열린 새장
+    const bx = rand(rng, 78, 122), by = rand(rng, 150, 180), r = 30;
+    let bars = "";
+    for (let i = -2; i <= 2; i++) {
+      const ox = i * (r * .42);
+      bars += `<path d="M${bx + ox} ${by + 56} Q ${bx + ox * 1.15} ${by} ${bx + ox * .3} ${by - 46}" stroke="${c.warm}" stroke-width="2" fill="none"/>`;
+    }
+    const fx = bx + rand(rng, 34, 50), fy = by - rand(rng, 60, 80);
+    return `${glowHalo(bx, by + 10, 26, c.glow)}
+      <ellipse cx="${bx}" cy="${by + 56}" rx="${r + 4}" ry="7" fill="${c.warm}"/>
+      ${bars}
+      <path d="M${bx - r} ${by + 50} Q ${bx} ${by - 60} ${bx + r} ${by + 50}" stroke="${c.warm}" stroke-width="2.6" fill="none"/>
+      <circle cx="${bx}" cy="${by - 52}" r="4" fill="none" stroke="${c.warm}" stroke-width="2.4"/>
+      <path d="M${bx + r - 6} ${by + 20} Q ${bx + r + 18} ${by - 2} ${bx + r + 4} ${by - 26}" stroke="${c.warm}" stroke-width="2" fill="none" opacity=".85"/>
+      <circle cx="${bx}" cy="${by + 22}" r="3" fill="${c.glow}"/>
+      <g fill="${c.glow}">
+        <polygon points="${fx},${fy} ${fx - 14},${fy - 4} ${fx - 5},${fy + 5}"/>
+        <polygon points="${fx - 2},${fy - 1} ${fx - 9},${fy - 12} ${fx - 12},${fy - 3}"/>
+      </g>
+      <circle cx="${fx - 22}" cy="${fy + 12}" r="1.6" fill="${c.glow}" opacity=".7"/>
+      <circle cx="${fx - 32}" cy="${fy + 22}" r="1.2" fill="${c.glow}" opacity=".5"/>`;
+  },
+  function teacup(rng, c) { // 찻잔 속 바다
+    const tx = rand(rng, 85, 115), ty = rand(rng, 168, 190);
+    return `<ellipse cx="${tx}" cy="${ty + 58}" rx="62" ry="11" fill="#00000030"/>
+      <ellipse cx="${tx}" cy="${ty + 52}" rx="58" ry="10" fill="${c.warm}" opacity=".9"/>
+      <path d="M${tx - 44} ${ty} L ${tx - 34} ${ty + 48} L ${tx + 34} ${ty + 48} L ${tx + 44} ${ty} Z" fill="${c.warm}"/>
+      <path d="M${tx - 44} ${ty} L ${tx - 34} ${ty + 48} L ${tx - 22} ${ty + 48} L ${tx - 30} ${ty} Z" fill="#ffffff1e"/>
+      <path d="M${tx + 42} ${ty + 8} q 24 4 18 24 q -5 14 -20 10" stroke="${c.warm}" stroke-width="5" fill="none"/>
+      <ellipse cx="${tx}" cy="${ty}" rx="44" ry="10" fill="${c.cool}"/>
+      <path d="M${tx - 30} ${ty} Q ${tx - 15} ${ty - 5} ${tx} ${ty} T ${tx + 30} ${ty}" stroke="#ffffff55" stroke-width="1.6" fill="none"/>
+      <path d="M${tx - 8} ${ty - 3} L ${tx - 8} ${ty - 22} L ${tx + 6} ${ty - 8} L ${tx - 8} ${ty - 8}" fill="#ffffffd8"/>
+      <path d="M${tx - 18} ${ty - 26} q -8 -14 2 -26 q 8 -10 2 -22" stroke="#ffffff44" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M${tx + 14} ${ty - 30} q -6 -12 3 -22" stroke="#ffffff33" stroke-width="3" fill="none" stroke-linecap="round"/>
+      ${glowHalo(tx, ty - 12, 10, c.glow)}`;
   },
 ];
 
 function cardArt(id, w) {
   const rng = mulberry32(id * 7919 + 13);
-  // (하늘 × 모티프) 조합을 고정 순열로 배정: 96 = 8하늘 × 12모티프, gcd(61, 96) = 1
+  // (하늘 × 모티프) 조합을 고정 순열로 배정: 128 = 8하늘 × 16모티프, gcd(61, 128) = 1
   // 이라 id → combo가 전단사이므로 84장 모두 서로 다른 조합을 갖는다
-  const combo = ((id - 1) * 61) % 96;
+  const combo = ((id - 1) * 61) % 128;
   const sky = SKIES[Math.floor(combo / MOTIFS.length) % SKIES.length];
   const motif = MOTIFS[combo % MOTIFS.length];
   const palette = {
-    glow: ["#f6e7b2", "#ffe9c9", "#f9f2d9", "#ffdfa6"][(id + Math.floor(combo / 12)) % 4],
+    glow: ["#f6e7b2", "#ffe9c9", "#f9f2d9", "#ffdfa6"][(id + Math.floor(combo / 16)) % 4],
     warm: ["#e0879b", "#f0a05e", "#8fc7b0", "#e8c04f", "#9b8fe0"][(id * 11 + 5) % 5],
     cool: ["#5a7fc0", "#63a68f", "#7e5aa8", "#4f8fa8", "#c06f9b"][(id * 13 + 1) % 5],
-    dark: "#20183f",
+    dark: "#1c1438",
     cream: "#f6efdf",
   };
   const groundKind = rng();
-  let ground = "";
-  if (groundKind < 0.45) ground = hills(rng, rand(rng, 40, 70), "#20183f");
-  else if (groundKind < 0.8) ground = sea(rng, rand(rng, 45, 75), "#1b2e57");
-  const gid = "sky" + id;
+  let ground = "", ambient = "";
+  if (groundKind < 0.42) {
+    ground = hills(rng, rand(rng, 40, 70), palette.dark);
+    ambient = fireflies(rng, Math.floor(rand(rng, 3, 7)), palette.glow, 236, 288);
+  } else if (groundKind < 0.8) {
+    ground = sea(rng, rand(rng, 45, 75), "#16264a");
+  }
+  const gid = "sky" + id, vid = "vg" + id;
   return `<svg viewBox="0 0 200 300" role="img" aria-label="카드 ${id}"${w ? ` width="${w}"` : ""}>
-    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${sky[0]}"/><stop offset=".55" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/>
-    </linearGradient></defs>
+    <defs>
+      <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${sky[0]}"/><stop offset=".38" stop-color="${sky[1]}"/>
+        <stop offset=".68" stop-color="${sky[2]}"/><stop offset="1" stop-color="${sky[3]}"/>
+      </linearGradient>
+      <radialGradient id="${vid}" cx=".5" cy=".42" r=".78">
+        <stop offset=".55" stop-color="#0a0620" stop-opacity="0"/>
+        <stop offset="1" stop-color="#0a0620" stop-opacity=".34"/>
+      </radialGradient>
+    </defs>
     <rect width="200" height="300" fill="url(#${gid})"/>
-    ${stars(rng, Math.floor(rand(rng, 8, 22)))}
-    ${rng() < 0.6 ? cloud(rng, rand(rng, 30, 170), rand(rng, 25, 70), rand(rng, 18, 34), "#ffffff", rand(rng, .12, .3).toFixed(2)) : ""}
+    ${stars(rng, Math.floor(rand(rng, 10, 24)))}
+    ${rng() < 0.25 ? shootingStar(rng) : ""}
+    ${rng() < 0.6 ? cloud(rng, rand(rng, 30, 170), rand(rng, 25, 70), rand(rng, 18, 34), "#ffffff", rand(rng, .1, .26).toFixed(2)) : ""}
     ${ground}
     ${motif(rng, palette)}
+    ${ambient}
+    <rect width="200" height="300" fill="url(#${vid})"/>
   </svg>`;
 }
 
