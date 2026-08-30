@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>황혼의 딕싯</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --ground: #1c1638;
+    --panel: #2a2152;
+    --panel-2: #352a63;
+    --line: #453a78;
+    --ink: #e9e3f7;
+    --ink-dim: #a49bcd;
+    --gold: #f0c674;
+    --rose: #dd8fa8;
+    --cream: #f6efdf;
+    --good: #8fd7a8;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Noto Sans KR", -apple-system, "Apple SD Gothic Neo", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    min-height: 100vh;
+    touch-action: manipulation;
+  }
+  #app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px calc(28px + env(safe-area-inset-bottom));
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1, h2, .serif {
+    font-family: "Gowun Batang", "Noto Serif KR", serif;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: 30px; font-weight: 700; }
+  h2 { font-size: 21px; font-weight: 700; }
+  p { margin: 0; }
+  .dim { color: var(--ink-dim); }
+  .gold { color: var(--gold); }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .stack-lg { display: flex; flex-direction: column; gap: 22px; }
+  .grow { flex: 1; }
+
+  button {
+    font: inherit;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 14px;
+    background: var(--gold);
+    color: #241a08;
+    font-weight: 700;
+    font-size: 17px;
+    text-align: center;
+    transition: transform .08s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { background: var(--line); color: var(--ink-dim); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid var(--line);
+  }
+  .btn:focus-visible, .card-slot:focus-visible, input:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  input[type="text"] {
+    font: inherit;
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+  }
+  input[type="text"]::placeholder { color: var(--ink-dim); }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  /* 카드 */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .card-slot {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--line);
+    background: var(--panel);
+    transition: transform .08s ease;
+    display: block;
+    width: 100%;
+  }
+  .card-slot:active { transform: scale(.97); }
+  .card-slot.selected { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240,198,116,.35); }
+  .card-slot svg { display: block; width: 100%; height: auto; }
+  .card-tag {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(20,14,44,.78);
+    color: var(--cream);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .card-tag.owner-st { background: rgba(240,198,116,.92); color: #241a08; font-weight: 700; }
+
+  /* 확대 프리뷰 */
+  #overlay[hidden] { display: none !important; }
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(12,8,28,.86);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    z-index: 10;
+  }
+  #overlay .big-card {
+    width: min(78vw, 320px, 52vh);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+  }
+  #overlay .big-card svg { display: block; width: 100%; height: auto; }
+  #overlay .row { display: flex; gap: 12px; width: min(78vw, 320px); }
+  #overlay .row .btn { flex: 1; }
+
+  /* 점수판 */
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row .name { flex: 1; font-weight: 500; }
+  .score-row .pts {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-size: 18px;
+  }
+  .score-row .delta {
+    color: var(--good);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .crown { color: var(--gold); }
+
+  .clue-banner {
+    text-align: center;
+    padding: 18px 16px;
+    border-radius: 16px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+  }
+  .clue-banner .clue-text {
+    font-family: "Gowun Batang", serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    text-wrap: balance;
+  }
+
+  .pass-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 18px;
+    min-height: 60vh;
+  }
+  .pass-screen .moon-mark { width: 110px; height: 110px; }
+
+  .setup-players { display: flex; flex-direction: column; gap: 10px; }
+  .player-input-row { display: flex; align-items: center; gap: 10px; }
+  .player-input-row .idx {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: var(--ink-dim);
+    flex-shrink: 0;
+  }
+  .count-picker { display: flex; gap: 8px; }
+  .count-picker button {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .count-picker button.on { background: var(--gold); color: #241a08; border-color: var(--gold); }
+
+  details.rules { border: 1px solid var(--line); border-radius: 14px; padding: 0; overflow: hidden; }
+  details.rules summary {
+    padding: 13px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    list-style: none;
+  }
+  details.rules summary::-webkit-details-marker { display: none; }
+  details.rules summary::after { content: "＋"; float: right; color: var(--ink-dim); }
+  details.rules[open] summary::after { content: "−"; }
+  details.rules .rules-body {
+    padding: 0 16px 16px;
+    color: var(--ink-dim);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .reveal-note {
+    font-size: 13px;
+    color: var(--ink-dim);
+    padding-top: 4px;
+  }
+  .vote-chips { display: flex; flex-wrap: wrap; gap: 4px; position: absolute; top: 6px; left: 6px; right: 6px; }
+  .vote-chip {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(221,143,168,.92);
+    color: #3a1220;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .hit-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--gold);
+    color: #241a08;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="overlay" hidden></div>
+
+<script>
+"use strict";
+
+/* ---------- 시드 난수 ---------- */
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function pick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+function rand(rng, min, max) { return min + rng() * (max - min); }
+
+/* ---------- 카드 아트 생성 (200x300 SVG) ---------- */
+const SKIES = [
+  ["#241a54", "#5b3a8f", "#c86f9b"],
+  ["#0d1b3d", "#1f3b73", "#3f6fa8"],
+  ["#3f1a3c", "#8f3b6b", "#e0879b"],
+  ["#0f3a3f", "#1f6b63", "#63a68f"],
+  ["#4a2a12", "#a8632b", "#f0c674"],
+  ["#1a1240", "#3a2a75", "#7e5aa8"],
+];
+
+function stars(rng, n) {
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const x = rand(rng, 8, 192), y = rand(rng, 8, 170);
+    const r = rand(rng, 0.7, 1.9);
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#fff" opacity="${rand(rng, .35, .9).toFixed(2)}"/>`;
+  }
+  return s;
+}
+function cloud(rng, x, y, w, color, op) {
+  return `<g fill="${color}" opacity="${op}">
+    <ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w * .34}"/>
+    <ellipse cx="${x - w * .5}" cy="${y + 3}" rx="${w * .55}" ry="${w * .22}"/>
+    <ellipse cx="${x + w * .55}" cy="${y + 2}" rx="${w * .5}" ry="${w * .2}"/>
+  </g>`;
+}
+function hills(rng, base, color) {
+  const y1 = 300 - base, r1 = rand(rng, 70, 130), x1 = rand(rng, 20, 90);
+  const r2 = rand(rng, 60, 110), x2 = rand(rng, 110, 185);
+  return `<g fill="${color}">
+    <circle cx="${x1}" cy="${300 + r1 - base}" r="${r1 + base * .6}"/>
+    <circle cx="${x2}" cy="${300 + r2 - base + 12}" r="${r2 + base * .5}"/>
+    <rect x="0" y="${y1 + 40}" width="200" height="${base + 40}"/>
+  </g>`;
+}
+function sea(rng, base, color) {
+  let waves = "";
+  for (let i = 0; i < 4; i++) {
+    const y = 300 - base + 12 + i * 14;
+    waves += `<path d="M0 ${y} Q 25 ${y - 5} 50 ${y} T 100 ${y} T 150 ${y} T 200 ${y}" stroke="#ffffff" stroke-width="1.4" fill="none" opacity="${(0.35 - i * 0.06).toFixed(2)}"/>`;
+  }
+  return `<rect x="0" y="${300 - base}" width="200" height="${base}" fill="${color}"/>${waves}`;
+}
+
+const MOTIFS = [
+  function moonLadder(rng, c) { // 달과 사다리
+    const mx = rand(rng, 70, 130), my = rand(rng, 60, 100), r = rand(rng, 34, 46);
+    let rungs = "";
+    const lx = mx - 8, topY = my + r - 6, botY = 288;
+    for (let y = topY + 14; y < botY; y += 16) rungs += `<line x1="${lx - 7}" y1="${y}" x2="${lx + 7}" y2="${y}"/>`;
+    return `<circle cx="${mx}" cy="${my}" r="${r}" fill="${c.glow}"/>
+      <circle cx="${mx - r * .3}" cy="${my - r * .2}" r="${r * .16}" fill="#00000018"/>
+      <circle cx="${mx + r * .25}" cy="${my + r * .3}" r="${r * .11}" fill="#00000015"/>
+      <g stroke="${c.dark}" stroke-width="3" stroke-linecap="round">
+        <line x1="${lx - 7}" y1="${topY}" x2="${lx - 7}" y2="${botY}"/>
+        <line x1="${lx + 7}" y1="${topY}" x2="${lx + 7}" y2="${botY}"/>${rungs}</g>`;
+  },
+  function balloon(rng, c) { // 열기구
+    const bx = rand(rng, 60, 140), by = rand(rng, 70, 110), r = rand(rng, 30, 40);
+    const basketY = by + r + 26;
+    return `<circle cx="${bx}" cy="${by}" r="${r}" fill="${c.warm}"/>
+      <path d="M${bx - r} ${by} A ${r} ${r} 0 0 1 ${bx + r} ${by}" fill="#ffffff2a"/>
+      <ellipse cx="${bx}" cy="${by}" rx="${r * .45}" ry="${r}" fill="#00000022"/>
+      <line x1="${bx - r * .6}" y1="${by + r * .75}" x2="${bx - 8}" y2="${basketY}" stroke="${c.dark}" stroke-width="2"/>
+      <line x1="${bx + r * .6}" y1="${by + r * .75}" x2="${bx + 8}" y2="${basketY}" stroke="${c.dark}" stroke-width="2"/>
+      <rect x="${bx - 10}" y="${basketY}" width="20" height="14" rx="3" fill="${c.dark}"/>`;
+  },
+  function whale(rng, c) { // 하늘 고래
+    const wx = rand(rng, 85, 115), wy = rand(rng, 120, 170), s = rand(rng, .8, 1.15);
+    return `<g transform="translate(${wx} ${wy}) scale(${s.toFixed(2)})">
+      <ellipse cx="0" cy="0" rx="62" ry="26" fill="${c.cool}"/>
+      <path d="M56 -4 L86 -22 L80 2 L88 20 L58 8 Z" fill="${c.cool}"/>
+      <ellipse cx="-6" cy="10" rx="50" ry="13" fill="#ffffff30"/>
+      <circle cx="-38" cy="-6" r="3.4" fill="#141031"/>
+      <circle cx="-52" cy="-34" r="3" fill="#ffffffaa"/>
+      <circle cx="-46" cy="-46" r="4.4" fill="#ffffff88"/>
+      <circle cx="-56" cy="-56" r="5.5" fill="#ffffff66"/>
+    </g>`;
+  },
+  function lonelyDoor(rng, c) { // 홀로 선 문
+    const dx = rand(rng, 75, 125), dy = 176;
+    return `<ellipse cx="${dx}" cy="${dy + 86}" rx="52" ry="12" fill="#00000030"/>
+      <rect x="${dx - 30}" y="${dy - 10}" width="60" height="96" rx="6" fill="${c.dark}"/>
+      <rect x="${dx - 22}" y="${dy - 2}" width="44" height="80" rx="4" fill="${c.glow}"/>
+      <circle cx="${dx + 13}" cy="${dy + 40}" r="3.2" fill="${c.dark}"/>
+      <line x1="${dx}" y1="${dy - 2}" x2="${dx}" y2="${dy + 78}" stroke="${c.dark}" stroke-width="2" opacity=".5"/>`;
+  },
+  function skyStairs(rng, c) { // 하늘 계단
+    let steps = "";
+    let x = rand(rng, 18, 40), y = 268;
+    for (let i = 0; i < 8; i++) {
+      steps += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="42" height="12" rx="3" fill="${c.dark}" opacity="${(1 - i * 0.07).toFixed(2)}"/>`;
+      x += rand(rng, 12, 20); y -= 26;
+    }
+    return steps + `<circle cx="${x + 26}" cy="${y + 4}" r="17" fill="${c.glow}"/>`;
+  },
+  function paperBoat(rng, c) { // 종이배
+    const bx = rand(rng, 70, 130), by = rand(rng, 200, 232);
+    return `<g transform="translate(${bx} ${by})">
+      <path d="M-40 0 L40 0 L22 20 L-22 20 Z" fill="${c.warm}"/>
+      <path d="M0 -30 L20 0 L-20 0 Z" fill="#ffffffd8"/>
+      <path d="M0 -30 L0 0 L-20 0 Z" fill="#ffffffa8"/>
+      <circle cx="0" cy="-40" r="5" fill="${c.glow}"/>
+    </g>`;
+  },
+  function lanternTree(rng, c) { // 등불 나무
+    const tx = rand(rng, 80, 120);
+    let dots = "";
+    for (let i = 0; i < 7; i++) {
+      dots += `<circle cx="${(tx + rand(rng, -38, 38)).toFixed(0)}" cy="${rand(rng, 110, 165).toFixed(0)}" r="${rand(rng, 3, 5.4).toFixed(1)}" fill="${c.glow}"/>`;
+    }
+    return `<path d="M${tx - 5} 268 L${tx - 9} 180 L${tx + 9} 180 L${tx + 5} 268 Z" fill="${c.dark}"/>
+      <circle cx="${tx}" cy="140" r="46" fill="${c.cool}" opacity=".92"/>
+      <circle cx="${tx - 30}" cy="160" r="26" fill="${c.cool}" opacity=".8"/>
+      <circle cx="${tx + 32}" cy="156" r="24" fill="${c.cool}" opacity=".8"/>${dots}`;
+  },
+  function jellyfish(rng, c) { // 해파리
+    const jx = rand(rng, 75, 125), jy = rand(rng, 90, 130), r = rand(rng, 30, 40);
+    let legs = "";
+    for (let i = -2; i <= 2; i++) {
+      const lx = jx + i * (r * .34);
+      legs += `<path d="M${lx} ${jy + 6} q 7 26 -4 48 q -8 20 3 40" stroke="${c.glow}" stroke-width="2.6" fill="none" opacity=".8"/>`;
+    }
+    return `<path d="M${jx - r} ${jy} A ${r} ${r} 0 0 1 ${jx + r} ${jy} Q ${jx + r * .6} ${jy + 12} ${jx} ${jy + 8} Q ${jx - r * .6} ${jy + 12} ${jx - r} ${jy} Z" fill="${c.warm}" opacity=".95"/>
+      <path d="M${jx - r * .6} ${jy - r * .3} A ${r * .8} ${r * .8} 0 0 1 ${jx + r * .5} ${jy - r * .5}" stroke="#ffffff66" stroke-width="4" fill="none"/>${legs}`;
+  },
+  function lighthouse(rng, c) { // 등대
+    const lx = rand(rng, 80, 120);
+    return `<polygon points="${lx - 16},262 ${lx + 16},262 ${lx + 10},150 ${lx - 10},150" fill="${c.warm}"/>
+      <rect x="${lx - 16}" y="196" width="32" height="12" fill="${c.dark}" opacity=".55"/>
+      <rect x="${lx - 16}" y="228" width="32" height="12" fill="${c.dark}" opacity=".55"/>
+      <rect x="${lx - 12}" y="134" width="24" height="16" rx="3" fill="${c.dark}"/>
+      <circle cx="${lx}" cy="142" r="6" fill="${c.glow}"/>
+      <polygon points="${lx + 8},136 196,110 196,168" fill="${c.glow}" opacity=".28"/>
+      <polygon points="${lx - 8},136 4,112 4,166" fill="${c.glow}" opacity=".2"/>`;
+  },
+  function eyeMoon(rng, c) { // 하늘의 눈
+    const ex = rand(rng, 75, 125), ey = rand(rng, 80, 115);
+    let lash = "";
+    for (let i = 0; i < 7; i++) {
+      const a = -Math.PI * (0.18 + 0.64 * i / 6);
+      const x1 = ex + Math.cos(a) * 46, y1 = ey + Math.sin(a) * 27;
+      const x2 = ex + Math.cos(a) * 58, y2 = ey + Math.sin(a) * 38;
+      lash += `<line x1="${x1.toFixed(0)}" y1="${y1.toFixed(0)}" x2="${x2.toFixed(0)}" y2="${y2.toFixed(0)}" stroke="${c.glow}" stroke-width="2.4" stroke-linecap="round"/>`;
+    }
+    return `<ellipse cx="${ex}" cy="${ey}" rx="46" ry="27" fill="${c.cream || "#f6efdf"}"/>
+      <circle cx="${ex}" cy="${ey}" r="16" fill="${c.cool}"/>
+      <circle cx="${ex}" cy="${ey}" r="7" fill="#141031"/>
+      <circle cx="${ex + 4}" cy="${ey - 5}" r="3" fill="#ffffffcc"/>${lash}`;
+  },
+  function umbrellaRain(rng, c) { // 우산과 별비
+    const ux = rand(rng, 75, 125), uy = rand(rng, 130, 160);
+    let drops = "";
+    for (let i = 0; i < 10; i++) {
+      const x = rand(rng, 15, 185), y = rand(rng, 20, uy - 44);
+      drops += `<line x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x - 5).toFixed(0)}" y2="${(y + 13).toFixed(0)}" stroke="${c.glow}" stroke-width="2" stroke-linecap="round" opacity=".75"/>`;
+    }
+    return `${drops}<path d="M${ux - 52} ${uy} A 52 52 0 0 1 ${ux + 52} ${uy} Z" fill="${c.warm}"/>
+      <path d="M${ux - 52} ${uy} A 52 52 0 0 1 ${ux} ${uy - 52} L ${ux} ${uy} Z" fill="#ffffff26"/>
+      <path d="M${ux} ${uy} L ${ux} ${uy + 74} q 0 12 12 12" stroke="${c.dark}" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  },
+  function islandFloat(rng, c) { // 떠 있는 섬
+    const ix = rand(rng, 80, 120), iy = rand(rng, 120, 150);
+    return `<polygon points="${ix - 52},${iy} ${ix + 52},${iy} ${ix + 20},${iy + 52} ${ix - 26},${iy + 44}" fill="${c.dark}"/>
+      <ellipse cx="${ix}" cy="${iy}" rx="52" ry="13" fill="${c.cool}"/>
+      <path d="M${ix - 8} ${iy - 4} L${ix - 11} ${iy - 40} L${ix - 3} ${iy - 40} L${ix - 6} ${iy - 4} Z" fill="${c.dark}"/>
+      <circle cx="${ix - 7}" cy="${iy - 52}" r="17" fill="${c.warm}"/>
+      <circle cx="${ix + 30}" cy="${iy + 62}" r="4" fill="${c.glow}" opacity=".7"/>
+      <circle cx="${ix - 38}" cy="${iy + 70}" r="3" fill="${c.glow}" opacity=".55"/>`;
+  },
+];
+
+function cardArt(id, w) {
+  const rng = mulberry32(id * 7919 + 13);
+  const sky = pick(rng, SKIES);
+  const palette = {
+    glow: pick(rng, ["#f6e7b2", "#ffe9c9", "#f9f2d9", "#ffdfa6"]),
+    warm: pick(rng, ["#e0879b", "#f0a05e", "#dd8fa8", "#e8b04f", "#d9788f"]),
+    cool: pick(rng, ["#5a7fc0", "#63a68f", "#7e5aa8", "#4f8fa8", "#8a6fc0"]),
+    dark: "#20183f",
+    cream: "#f6efdf",
+  };
+  const motif = pick(rng, MOTIFS);
+  const groundKind = rng();
+  let ground = "";
+  if (groundKind < 0.45) ground = hills(rng, rand(rng, 40, 70), "#20183f");
+  else if (groundKind < 0.8) ground = sea(rng, rand(rng, 45, 75), "#1b2e57");
+  const gid = "sky" + id;
+  return `<svg viewBox="0 0 200 300" role="img" aria-label="카드 ${id}"${w ? ` width="${w}"` : ""}>
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${sky[0]}"/><stop offset=".55" stop-color="${sky[1]}"/><stop offset="1" stop-color="${sky[2]}"/>
+    </linearGradient></defs>
+    <rect width="200" height="300" fill="url(#${gid})"/>
+    ${stars(rng, Math.floor(rand(rng, 8, 22)))}
+    ${rng() < 0.6 ? cloud(rng, rand(rng, 30, 170), rand(rng, 25, 70), rand(rng, 18, 34), "#ffffff", rand(rng, .12, .3).toFixed(2)) : ""}
+    ${ground}
+    ${motif(rng, palette)}
+  </svg>`;
+}
+
+/* ---------- 게임 상태 ---------- */
+const DECK_SIZE = 84;
+const HAND_SIZE = 6;
+const WIN_SCORE = 30;
+const SAVE_KEY = "dixit-twilight-v1";
+
+let G = null; // 게임 상태
+let ui = {};  // 화면 전환용 임시 상태 (저장 안 함)
+
+function newGame(names) {
+  const deck = Array.from({ length: DECK_SIZE }, (_, i) => i + 1);
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  const players = names.map(n => ({ name: n, score: 0, hand: deck.splice(0, HAND_SIZE) }));
+  G = {
+    players, deck,
+    round: 1,
+    storyteller: 0,
+    phase: "story-pass", // story-pass → story-pick → pick(pass/choose 반복) → vote(반복) → reveal → next
+    clue: "",
+    submissions: [],     // {player, card}
+    tableOrder: [],      // 섞인 카드 id 배열
+    votes: {},           // player index → card id
+    turnQueue: [],       // 제출/투표 순서 (플레이어 인덱스)
+    lastDeltas: null,
+    over: false,
+  };
+  save();
+}
+
+function save() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(G)); } catch (e) {}
+}
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    const g = JSON.parse(raw);
+    if (g && g.players && g.players.length >= 3 && !g.over) return g;
+  } catch (e) {}
+  return null;
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+}
+
+function otherPlayers() {
+  return G.players.map((_, i) => i).filter(i => i !== G.storyteller);
+}
+
+/* ---------- 렌더링 ---------- */
+const app = document.getElementById("app");
+const overlay = document.getElementById("overlay");
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+function render(html) {
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function showPreview(cardId, confirmLabel, onConfirm) {
+  overlay.innerHTML = `
+    <div class="big-card">${cardArt(cardId)}</div>
+    <div class="row">
+      <button class="btn btn-ghost" id="pv-cancel">닫기</button>
+      ${confirmLabel ? `<button class="btn" id="pv-ok">${confirmLabel}</button>` : ""}
+    </div>`;
+  overlay.hidden = false;
+  document.getElementById("pv-cancel").onclick = () => { overlay.hidden = true; };
+  if (confirmLabel) document.getElementById("pv-ok").onclick = () => { overlay.hidden = true; onConfirm(); };
+}
+
+function moonMark() {
+  return `<svg class="moon-mark" viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="44" fill="#f0c674"/>
+    <circle cx="46" cy="50" r="8" fill="#00000018"/>
+    <circle cx="70" cy="72" r="6" fill="#00000014"/>
+    <circle cx="93" cy="28" r="3" fill="#e9e3f7"/>
+    <circle cx="20" cy="34" r="2.2" fill="#e9e3f7"/>
+    <circle cx="102" cy="86" r="2.4" fill="#e9e3f7"/>
+  </svg>`;
+}
+
+function scoreBoard(deltas) {
+  const order = G.players.map((p, i) => ({ ...p, i })).sort((a, b) => b.score - a.score);
+  const top = order[0].score;
+  return `<div class="panel">${order.map(p => `
+    <div class="score-row">
+      <span class="name">${p.score === top && top > 0 ? '<span class="crown">★</span> ' : ""}${esc(p.name)}${p.i === G.storyteller ? ' <span class="dim">(이야기꾼)</span>' : ""}</span>
+      ${deltas && deltas[p.i] ? `<span class="delta">+${deltas[p.i]}</span>` : ""}
+      <span class="pts">${p.score}</span>
+    </div>`).join("")}
+  </div>`;
+}
+
+/* ---------- 화면들 ---------- */
+function screenSetup() {
+  const saved = loadSaved();
+  ui.count = ui.count || 4;
+  ui.names = ui.names || [];
+  render(`
+    <div class="stack-lg">
+      <header class="stack" style="text-align:center; padding-top: 20px;">
+        ${moonMark()}
+        <p class="eyebrow">한 대의 폰으로 즐기는 이야기 카드 게임</p>
+        <h1>황혼의 딕싯</h1>
+        <p class="dim">이야기꾼의 힌트를 듣고, 진짜 카드를 찾아내세요.<br>폰을 옆으로 넘겨가며 함께 플레이합니다.</p>
+      </header>
+      ${saved ? `<button class="btn" id="resume">이어하기 <span style="font-weight:400">(라운드 ${saved.round})</span></button>` : ""}
+      <div class="panel stack">
+        <h2>플레이어 <span class="dim" style="font-size:14px; font-weight:400">3~6명</span></h2>
+        <div class="count-picker">
+          ${[3, 4, 5, 6].map(n => `<button data-n="${n}" class="${ui.count === n ? "on" : ""}">${n}명</button>`).join("")}
+        </div>
+        <div class="setup-players" id="name-rows"></div>
+      </div>
+      <details class="rules">
+        <summary>게임 방법</summary>
+        <div class="rules-body">
+          <p>1. 매 라운드 <b>이야기꾼</b>이 자기 카드 한 장을 골라 힌트(한 단어, 문장, 노래 뭐든)를 냅니다.</p>
+          <p>2. 다른 플레이어도 힌트에 어울리는 카드를 한 장씩 몰래 냅니다.</p>
+          <p>3. 카드를 섞어 공개하면, 이야기꾼을 제외한 모두가 <b>이야기꾼의 카드</b>라고 생각하는 카드에 투표합니다.</p>
+          <p>4. <b>전원 정답이거나 전원 오답이면</b> 이야기꾼은 0점, 나머지는 2점. 그 외엔 이야기꾼과 정답자가 3점.</p>
+          <p>5. 내 카드에 표를 받으면 표당 1점 보너스. <b>30점</b>에 먼저 도달하면 승리!</p>
+        </div>
+      </details>
+      <button class="btn" id="start">게임 시작</button>
+    </div>`);
+
+  const renderNameRows = () => {
+    const rows = document.getElementById("name-rows");
+    rows.innerHTML = Array.from({ length: ui.count }, (_, i) => `
+      <div class="player-input-row">
+        <span class="idx">${i + 1}</span>
+        <input type="text" maxlength="10" placeholder="플레이어 ${i + 1}" value="${esc(ui.names[i] || "")}" data-i="${i}">
+      </div>`).join("");
+    rows.querySelectorAll("input").forEach(inp => {
+      inp.addEventListener("input", () => { ui.names[+inp.dataset.i] = inp.value; });
+    });
+  };
+  renderNameRows();
+
+  document.querySelectorAll(".count-picker button").forEach(b => {
+    b.onclick = () => { ui.count = +b.dataset.n; screenSetup(); };
+  });
+  if (saved) document.getElementById("resume").onclick = () => { G = saved; route(); };
+  document.getElementById("start").onclick = () => {
+    const names = Array.from({ length: ui.count }, (_, i) => (ui.names[i] || "").trim() || `플레이어 ${i + 1}`);
+    clearSaved();
+    newGame(names);
+    route();
+  };
+}
+
+function screenPass(toName, roleLine, onNext) {
+  render(`
+    <div class="pass-screen">
+      ${moonMark()}
+      <p class="eyebrow">라운드 ${G.round}</p>
+      <h1>${esc(toName)}</h1>
+      <p class="dim">${roleLine}<br>다른 사람은 화면을 보지 마세요!</p>
+      <div style="width: min(78vw, 300px);"><button class="btn" id="pass-ok">${esc(toName)} 님이에요, 시작!</button></div>
+    </div>`);
+  document.getElementById("pass-ok").onclick = onNext;
+}
+
+function cardGridHTML(cards, tagFn) {
+  return `<div class="card-grid">${cards.map(id => `
+    <button class="card-slot" data-card="${id}">
+      ${cardArt(id)}
+      ${tagFn ? tagFn(id) : ""}
+    </button>`).join("")}
+  </div>`;
+}
+
+function screenStorytellerPick() {
+  const st = G.players[G.storyteller];
+  render(`
+    <div class="stack-lg">
+      <header class="stack">
+        <p class="eyebrow">라운드 ${G.round} · 이야기꾼</p>
+        <h2>${esc(st.name)} 님, 카드를 고르고 힌트를 정하세요</h2>
+        <p class="dim" style="font-size:14px">카드를 누르면 크게 볼 수 있어요. 힌트는 너무 쉽지도, 너무 어렵지도 않게!</p>
+      </header>
+      ${cardGridHTML(st.hand)}
+      <div class="panel stack" id="clue-box" hidden>
+        <p class="dim" style="font-size:14px">고른 카드에 어울리는 힌트</p>
+        <input type="text" id="clue-input" maxlength="40" placeholder="예: 끝나지 않는 여행">
+        <button class="btn" id="clue-ok">힌트 확정</button>
+      </div>
+    </div>`);
+
+  let chosen = null;
+  const clueBox = document.getElementById("clue-box");
+  document.querySelectorAll(".card-slot").forEach(el => {
+    el.onclick = () => {
+      const id = +el.dataset.card;
+      showPreview(id, "이 카드로 결정", () => {
+        chosen = id;
+        document.querySelectorAll(".card-slot").forEach(s => s.classList.toggle("selected", +s.dataset.card === id));
+        clueBox.hidden = false;
+        clueBox.scrollIntoView({ behavior: "smooth", block: "center" });
+        document.getElementById("clue-input").focus();
+      });
+    };
+  });
+  document.getElementById("clue-ok").onclick = () => {
+    const clue = document.getElementById("clue-input").value.trim();
+    if (!chosen || !clue) return;
+    G.clue = clue;
+    G.submissions = [{ player: G.storyteller, card: chosen }];
+    G.players[G.storyteller].hand = G.players[G.storyteller].hand.filter(c => c !== chosen);
+    G.turnQueue = otherPlayers();
+    G.phase = "pick-pass";
+    save(); route();
+  };
+}
+
+function screenPick() {
+  const pi = G.turnQueue[0];
+  const p = G.players[pi];
+  render(`
+    <div class="stack-lg">
+      <header class="stack">
+        <p class="eyebrow">라운드 ${G.round} · 카드 내기</p>
+        <div class="clue-banner">
+          <p class="dim" style="font-size:13px">${esc(G.players[G.storyteller].name)} 님의 힌트</p>
+          <p class="clue-text">“${esc(G.clue)}”</p>
+        </div>
+        <h2>${esc(p.name)} 님, 힌트에 어울리는 카드를 내세요</h2>
+      </header>
+      ${cardGridHTML(p.hand)}
+    </div>`);
+  document.querySelectorAll(".card-slot").forEach(el => {
+    el.onclick = () => {
+      const id = +el.dataset.card;
+      showPreview(id, "이 카드 내기", () => {
+        G.submissions.push({ player: pi, card: id });
+        p.hand = p.hand.filter(c => c !== id);
+        G.turnQueue.shift();
+        if (G.turnQueue.length === 0) {
+          G.tableOrder = G.submissions.map(s => s.card);
+          for (let i = G.tableOrder.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [G.tableOrder[i], G.tableOrder[j]] = [G.tableOrder[j], G.tableOrder[i]];
+          }
+          G.votes = {};
+          G.turnQueue = otherPlayers();
+          G.phase = "vote-pass";
+        } else {
+          G.phase = "pick-pass";
+        }
+        save(); route();
+      });
+    };
+  });
+}
+
+function screenVote() {
+  const pi = G.turnQueue[0];
+  const p = G.players[pi];
+  const own = G.submissions.find(s => s.player === pi).card;
+  render(`
+    <div class="stack-lg">
+      <header class="stack">
+        <p class="eyebrow">라운드 ${G.round} · 투표</p>
+        <div class="clue-banner">
+          <p class="dim" style="font-size:13px">힌트</p>
+          <p class="clue-text">“${esc(G.clue)}”</p>
+        </div>
+        <h2>${esc(p.name)} 님, 이야기꾼의 카드는 어느 것일까요?</h2>
+        <p class="dim" style="font-size:14px">내가 낸 카드에는 투표할 수 없어요.</p>
+      </header>
+      ${cardGridHTML(G.tableOrder, id => id === own ? `<span class="card-tag">내 카드</span>` : "")}
+    </div>`);
+  document.querySelectorAll(".card-slot").forEach(el => {
+    const id = +el.dataset.card;
+    if (id === own) { el.style.opacity = ".45"; el.onclick = () => showPreview(id, null); return; }
+    el.onclick = () => {
+      showPreview(id, "이 카드에 투표", () => {
+        G.votes[pi] = id;
+        G.turnQueue.shift();
+        G.phase = G.turnQueue.length === 0 ? "reveal" : "vote-pass";
+        if (G.phase === "reveal") applyScores();
+        save(); route();
+      });
+    };
+  });
+}
+
+function applyScores() {
+  const st = G.storyteller;
+  const stCard = G.submissions.find(s => s.player === st).card;
+  const voters = otherPlayers();
+  const correct = voters.filter(v => G.votes[v] === stCard);
+  const deltas = {};
+  G.players.forEach((_, i) => { deltas[i] = 0; });
+
+  if (correct.length === 0 || correct.length === voters.length) {
+    voters.forEach(v => { deltas[v] += 2; });
+  } else {
+    deltas[st] += 3;
+    correct.forEach(v => { deltas[v] += 3; });
+  }
+  G.submissions.forEach(s => {
+    if (s.player === st) return;
+    const got = voters.filter(v => G.votes[v] === s.card).length;
+    deltas[s.player] += got;
+  });
+  G.players.forEach((p, i) => { p.score += deltas[i]; });
+  G.lastDeltas = deltas;
+}
+
+function screenReveal() {
+  const st = G.storyteller;
+  const stCard = G.submissions.find(s => s.player === st).card;
+  const voters = otherPlayers();
+  const correct = voters.filter(v => G.votes[v] === stCard);
+  const allOrNone = correct.length === 0 || correct.length === voters.length;
+
+  const ownerOf = id => G.players[G.submissions.find(s => s.card === id).player];
+  const votersOf = id => voters.filter(v => G.votes[v] === id).map(v => G.players[v].name);
+
+  const summary = allOrNone
+    ? (correct.length === 0
+      ? "아무도 이야기꾼의 카드를 찾지 못했어요! 이야기꾼 0점, 나머지 모두 +2점."
+      : "전원이 정답을 맞혔어요! 힌트가 너무 쉬웠네요. 이야기꾼 0점, 나머지 모두 +2점.")
+    : `${correct.length}명이 정답을 맞혔어요! 이야기꾼과 정답자는 +3점.`;
+
+  render(`
+    <div class="stack-lg">
+      <header class="stack">
+        <p class="eyebrow">라운드 ${G.round} · 결과 공개</p>
+        <div class="clue-banner">
+          <p class="clue-text">“${esc(G.clue)}”</p>
+          <p class="dim" style="font-size:14px; padding-top:6px">${summary}</p>
+        </div>
+      </header>
+      <div class="card-grid">${G.tableOrder.map(id => `
+        <div class="card-slot ${id === stCard ? "selected" : ""}" style="cursor:default">
+          ${cardArt(id)}
+          ${id === stCard ? `<span class="hit-badge">정답</span>` : ""}
+          <div class="vote-chips">${votersOf(id).map(n => `<span class="vote-chip">${esc(n)}</span>`).join("")}</div>
+          <span class="card-tag ${id === stCard ? "owner-st" : ""}">${esc(ownerOf(id).name)}</span>
+        </div>`).join("")}
+      </div>
+      <p class="reveal-note">카드 위 분홍 칩은 그 카드에 투표한 사람이에요. 남의 표를 받은 카드는 표당 +1점.</p>
+      ${scoreBoard(G.lastDeltas)}
+      <button class="btn" id="next">다음으로</button>
+    </div>`);
+  document.getElementById("next").onclick = () => {
+    finishRound();
+  };
+}
+
+function finishRound() {
+  const winner = G.players.filter(p => p.score >= WIN_SCORE);
+  const canRefill = G.deck.length >= G.players.length;
+  if (winner.length > 0 || !canRefill) {
+    G.over = true;
+    clearSaved();
+    G.phase = "end";
+    route();
+    return;
+  }
+  G.players.forEach(p => { p.hand.push(G.deck.pop()); });
+  G.round += 1;
+  G.storyteller = (G.storyteller + 1) % G.players.length;
+  G.clue = "";
+  G.submissions = [];
+  G.tableOrder = [];
+  G.votes = {};
+  G.lastDeltas = null;
+  G.phase = "story-pass";
+  save(); route();
+}
+
+function screenEnd() {
+  const top = Math.max(...G.players.map(p => p.score));
+  const winners = G.players.filter(p => p.score === top).map(p => p.name);
+  render(`
+    <div class="stack-lg" style="padding-top: 24px;">
+      <header class="stack" style="text-align:center;">
+        ${moonMark()}
+        <p class="eyebrow">게임 종료</p>
+        <h1>${esc(winners.join(", "))} 승리!</h1>
+        <p class="dim">${G.round}라운드 동안의 멋진 이야기였어요.</p>
+      </header>
+      ${scoreBoard(null)}
+      <button class="btn" id="again">같은 멤버로 한 판 더</button>
+      <button class="btn btn-ghost" id="home">처음으로</button>
+    </div>`);
+  document.getElementById("again").onclick = () => {
+    newGame(G.players.map(p => p.name));
+    route();
+  };
+  document.getElementById("home").onclick = () => { G = null; screenSetup(); };
+}
+
+/* ---------- 라우팅 ---------- */
+function route() {
+  overlay.hidden = true;
+  if (!G) { screenSetup(); return; }
+  switch (G.phase) {
+    case "story-pass": {
+      const st = G.players[G.storyteller];
+      screenPass(st.name, "이번 라운드의 이야기꾼입니다.", () => { G.phase = "story-pick"; save(); route(); });
+      break;
+    }
+    case "story-pick": screenStorytellerPick(); break;
+    case "pick-pass": {
+      const p = G.players[G.turnQueue[0]];
+      screenPass(p.name, "힌트에 어울리는 카드를 낼 차례입니다.", () => { G.phase = "pick"; save(); route(); });
+      break;
+    }
+    case "pick": screenPick(); break;
+    case "vote-pass": {
+      const p = G.players[G.turnQueue[0]];
+      screenPass(p.name, "이야기꾼의 카드를 찾아 투표할 차례입니다.", () => { G.phase = "vote"; save(); route(); });
+      break;
+    }
+    case "vote": screenVote(); break;
+    case "reveal": screenReveal(); break;
+    case "end": screenEnd(); break;
+    default: screenSetup();
+  }
+}
+
+route();
+</script>
+</body>
+</html>
